@@ -8,8 +8,9 @@ import numpy as np
 
 import greedy
 import utlis
+import bcd
 
-def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50):
+def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
     """
     ALM main function
     """
@@ -19,20 +20,18 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50):
     x, λ, ρ = initialize(df, num_customers, num_vehicles)
     # get global constraints
     cj, Aj, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
-    # constraints violation
-    violation = A @ x.flatten() - b
     # init step size
     alpha_0 = 0.1
     # iterations
     for k in range(k_max):
         # update x
         x = updatePrimalSolution(df, num_customers, num_vehicles,
-                                 x, λ, ρ, cj, Aj, violation,
-                                 t_max, method="c")
+                                 x, λ, ρ, cj, Aj, A, b,
+                                 t_max, tol, method="c")
         # constraints violation
         violation = A @ x.flatten() - b
         # termination condition
-        if np.linalg.norm(violation) < 1e-3:
+        if np.linalg.norm(violation) < tol:
             return x, λ, ρ
         # update step size
         alpha = alpha_0 / np.sqrt(k+1)
@@ -53,16 +52,19 @@ def initialize(df, num_customers, num_vehicles):
 
 
 def updatePrimalSolution(df, num_customers, num_vehicles,
-                         x, λ, ρ, cj, Aj, violation,
-                         t_max, method="c"):
+                         x, λ, ρ, cj, Aj, A, b, t_max, tol, method):
     """
     update primal solution with BCD method
     """
     # iterations
     for t in range(t_max):
-        # block coordinates descent
-        for j in range(num_vehicles):
-            grad_j = utlis.computeGradient(x, cj, Aj, λ, ρ, violation)
+        x_new = bcd.descent(df, num_customers, num_vehicles,
+                            x, λ, ρ, cj, Aj, A, b, method)
+        # termination condition
+        if np.linalg.norm(x_new - x) < tol:
+            return x_new
+        # update
+        x = x_new
     return x
 
 
