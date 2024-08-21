@@ -9,7 +9,7 @@ import numpy as np
 import greedy
 import utlis
 
-def solve(df, num_customers=25, num_vehicles=3, k_max=100):
+def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50):
     """
     ALM main function
     """
@@ -26,7 +26,9 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100):
     # iterations
     for k in range(k_max):
         # update x
-        x = updatePrimalSolution(df, num_customers, num_vehicles, x, λ, ρ, Aj, method="c")
+        x = updatePrimalSolution(df, num_customers, num_vehicles,
+                                 x, λ, ρ, cj, Aj, violation,
+                                 t_max, method="c")
         # constraints violation
         violation = A @ x.flatten() - b
         # termination condition
@@ -50,11 +52,17 @@ def initialize(df, num_customers, num_vehicles):
     return x_init, λ_init, ρ_init
 
 
-def updatePrimalSolution(df, num_customers, num_vehicles, x, λ, ρ, Aj, method):
+def updatePrimalSolution(df, num_customers, num_vehicles,
+                         x, λ, ρ, cj, Aj, violation,
+                         t_max, method="c"):
     """
     update primal solution with BCD method
     """
-    pass
+    # iterations
+    for t in range(t_max):
+        # block coordinates descent
+        for j in range(num_vehicles):
+            grad_j = utlis.computeGradient(x, cj, Aj, λ, ρ, violation)
     return x
 
 

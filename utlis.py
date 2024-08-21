@@ -49,6 +49,14 @@ def generateAj(num_customers):
     return Aj
 
 
+def computeGradient(x, cj, Aj, λ, ρ, violation):
+    """
+    Compute the gradient for the block j in the ALM.
+    """
+    grad_j = cj + Aj.T @ λ + ρ * (Aj.T @ violation)
+    return grad_j
+
+
 if __name__ == "__main__":
 
     # generate Aj
