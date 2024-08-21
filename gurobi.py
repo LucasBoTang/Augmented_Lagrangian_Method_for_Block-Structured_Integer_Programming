@@ -8,12 +8,12 @@ import numpy as np
 import gurobipy as grb
 from gurobipy import GRB
 
-def getModel(df, num_customers=25, num_vehicle=3):
+def solve(df, num_customers=25, num_vehicles=3):
     # number of nodes
     num_nodes = num_customers + 1
     # get sets
     edges = [(i, j) for i in range(num_nodes) for j in range(num_nodes) if i != j]
-    vehicles = list(range(num_vehicle))
+    vehicles = list(range(num_vehicles))
     nodes = list(range(num_nodes))
     # get n customers
     df = df.iloc[:num_nodes]
@@ -41,13 +41,13 @@ def getModel(df, num_customers=25, num_vehicle=3):
     # visit constraint
     model.addConstrs(grb.quicksum(x[j, s, t] for j in vehicles for t in nodes
                                   if t != s) == 1
-                     for s in range(1, num_nodes))
+                     for s in nodes if s != 0)
     # flow balance constraint
     model.addConstrs(grb.quicksum(x[j, s, t]
                                   for t in nodes if t != s) ==
                      grb.quicksum(x[j, t, s]
                                   for t in nodes if t != s)
-                     for j in range(num_vehicle) for s in nodes)
+                     for j in vehicles for s in nodes)
     # departure and return constraint
     model.addConstrs(grb.quicksum(x[j, 0, t]
                                   for t in nodes if t != 0) == 1
@@ -67,7 +67,9 @@ def getModel(df, num_customers=25, num_vehicle=3):
     # time window bound constraint
     model.addConstrs(w[j, s] >= ready_time[s] for j in vehicles for s in nodes)
     model.addConstrs(w[j, s] <= due_date[s] for j in vehicles for s in nodes)
-    return model
+    # solve
+    model.optimize()
+
 
 
 if __name__ == "__main__":
@@ -78,8 +80,4 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    model = getModel(df)
-    #model = getModel(df, num_customers=50, num_vehicle=3)
-
-    # solve model
-    model.optimize()
+    model = solve(df)
