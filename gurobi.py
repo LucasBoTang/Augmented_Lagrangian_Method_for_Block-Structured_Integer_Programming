@@ -9,6 +9,9 @@ import gurobipy as grb
 from gurobipy import GRB
 
 def solve(df, num_customers=25, num_vehicles=3):
+    """
+    Gurobi model
+    """
     # number of nodes
     num_nodes = num_customers + 1
     # get sets
