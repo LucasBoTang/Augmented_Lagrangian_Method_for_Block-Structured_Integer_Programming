@@ -5,6 +5,7 @@ Augmented Lagrangian Method
 """
 
 import numpy as np
+from tqdm import tqdm
 
 import greedy
 import utlis
@@ -23,15 +24,19 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
     # init step size
     alpha_0 = 0.1
     # iterations
-    for k in range(k_max):
+    for k in tqdm(range(k_max)):
         # update x
         x = updatePrimalSolution(df, num_customers, num_vehicles,
                                  x, λ, ρ, cj, Aj, A, b,
                                  t_max, tol, method="c")
         # constraints violation
         violation = A @ x.flatten() - b
+        # violation norm
+        violation_norm = np.linalg.norm(violation)
+        # update tqdm description with violation norm
+        tqdm.write(f"Iteration {k+1}/{k_max}: Violation Norm = {violation_norm:.4f}")
         # termination condition
-        if np.linalg.norm(violation) < tol:
+        if violation_norm < tol:
             return x, λ, ρ
         # update step size
         alpha = alpha_0 / np.sqrt(k+1)
@@ -47,7 +52,7 @@ def initialize(df, num_customers, num_vehicles):
     """
     x_init = greedy.solve(df, num_customers, num_vehicles)
     λ_init = np.zeros(num_customers)
-    ρ_init = 1
+    ρ_init = 10
     return x_init, λ_init, ρ_init
 
 
