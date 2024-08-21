@@ -56,10 +56,10 @@ def solve(df, num_customers=25, num_vehicles=3):
         vehicle_routes.append(current_route)
         vehicles_used += 1
     # still remaining customers
-    if remaining_customers:
-        print("Warning: Not all customers were assigned a route with the given vehicle limit.")
-        for customer in remaining_customers:
-            print(f"Customer {customer} could not be assigned due to vehicle or capacity limits.")
+    #if remaining_customers:
+    #    print("Warning: Not all customers were assigned a route with the given vehicle limit.")
+    #    for customer in remaining_customers:
+    #        print(f"Customer {customer} could not be assigned due to vehicle or capacity limits.")
     # transform solution
     x = transformSolution(vehicle_routes, num_customers)
     return x
