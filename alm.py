@@ -19,10 +19,10 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100):
     x, λ, ρ = initialize(df, num_customers, num_vehicles)
     # get global constraints
     Aj, A, b = getGlobalConstraintsCoefficients(num_customers, num_vehicles)
+    # init step size
+    alpha_0 = 0.1
     # iterations
     for k in range(k_max):
-        # step size
-        alpha = 0.1
         # update x
         x = updatePrimalSolution(df, num_customers, num_vehicles, x, λ, ρ, Aj, method="c")
         # constraints violation
@@ -30,6 +30,8 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100):
         # termination condition
         if np.linalg.norm(violation) < 1e-3:
             return x, λ, ρ
+        # update step size
+        alpha = alpha_0 / np.sqrt(k+1)
         # update λ & ρ
         λ = updateLagrangeMultipliers(λ, violation, alpha)
         ρ = updatePenaltyCoefficient(ρ, σ=1.1)
