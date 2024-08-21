@@ -71,7 +71,6 @@ def solve(df, num_customers=25, num_vehicles=3):
     model.optimize()
 
 
-
 if __name__ == "__main__":
 
     import data
