@@ -56,7 +56,7 @@ def computeGradient(x, cj, Aj, λ, ρ, A, b):
     # constraints violation
     violation = A @ x.flatten() - b
     # compute gradient
-    grad_j = cj + Aj.T @ λ + ρ * (Aj.T @ violation)
+    grad_j = cj + Aj.T @ λ + ρ * Aj.T @ violation
     return grad_j
 
 
