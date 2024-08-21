@@ -18,7 +18,9 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100):
     # initialize problem
     x, λ, ρ = initialize(df, num_customers, num_vehicles)
     # get global constraints
-    Aj, A, b = getGlobalConstraintsCoefficients(num_customers, num_vehicles)
+    cj, Aj, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
+    # constraints violation
+    violation = A @ x.flatten() - b
     # init step size
     alpha_0 = 0.1
     # iterations
@@ -46,16 +48,6 @@ def initialize(df, num_customers, num_vehicles):
     λ_init = np.zeros(num_customers)
     ρ_init = 1
     return x_init, λ_init, ρ_init
-
-
-def getGlobalConstraintsCoefficients(num_customers, num_vehicles):
-    """
-    get constraints coefficient A & b
-    """
-    Aj = utlis.generateAj(num_customers)
-    A = np.hstack([Aj] * num_vehicles)
-    b = np.ones(num_customers)
-    return Aj, A, b
 
 
 def updatePrimalSolution(df, num_customers, num_vehicles, x, λ, ρ, Aj, method):
