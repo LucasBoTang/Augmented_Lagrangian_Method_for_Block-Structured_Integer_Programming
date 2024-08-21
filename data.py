@@ -15,7 +15,7 @@ def getData(file_path=file_path):
     # init data
     data = []
     # open file
-    with open('c102.txt', 'r') as file:
+    with open("c102.txt", "r") as file:
         # skip first row
         next(file)
         # read file
