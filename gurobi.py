@@ -69,6 +69,7 @@ def solve(df, num_customers=25, num_vehicles=3):
     model.addConstrs(w[j, s] <= due_date[s] for j in vehicles for s in nodes)
     # solve
     model.optimize()
+    return model
 
 
 if __name__ == "__main__":
