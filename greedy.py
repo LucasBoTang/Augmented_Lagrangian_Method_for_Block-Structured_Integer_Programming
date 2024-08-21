@@ -55,7 +55,28 @@ def solve(df, num_customers=25, num_vehicles=3):
         current_route.append(0)
         vehicle_routes.append(current_route)
         vehicles_used += 1
-    return vehicle_routes
+    # transform solution
+    x = transformSolution(vehicle_routes, num_customers)
+    return x
+
+
+def transformSolution(vehicle_routes, num_customers):
+    """
+    transform from vehicle_routes to solution vector
+    """
+    # init
+    edges = [(i, j) for i in range(num_customers+1) for j in range(num_customers+1) if i != j]
+    x = np.zeros((len(vehicle_routes), len(edges)))
+    # dict: edge to index
+    e2i_table = {}
+    for i, e in enumerate(edges):
+        e2i_table[e] = i
+    # route for each vehicle
+    for j, route in enumerate(vehicle_routes):
+        for s, t in zip(route[:-1], route[1:]):
+            i = e2i_table[(s,t)]
+            x[j,i] = 1
+    return x
 
 if __name__ == "__main__":
 
@@ -65,4 +86,4 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    model = solve(df, num_customers=50, num_vehicles=5)
+    x = solve(df)
