@@ -51,13 +51,20 @@ def generateAj(num_customers):
 
 def computeGradient(x, cj, Aj, λ, ρ, A, b):
     """
-    Compute the gradient for the block j in the ALM.
+    compute the gradient for the block j in the ALM
     """
     # constraints violation
     violation = A @ x.flatten() - b
     # compute gradient
     grad_j = cj + Aj.T @ λ + ρ * Aj.T @ violation
     return grad_j
+
+
+def sol2Numpy(xj):
+    """
+    convert Gurobi decision variables to numpy array
+    """
+    return np.array([xj[e].X for e in xj])
 
 
 if __name__ == "__main__":
