@@ -23,7 +23,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
     # get global constraints
     cj, Aj, c, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
     # init step size
-    alpha_0 = 0.1
+    α_0 = 0.1
     # init timer
     tick = time.time()
     # iterations
@@ -49,9 +49,9 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
             print(f"Converged after {k+1} iterations within {elpased:.2f} sec")
             return x, λ, ρ
         # update step size
-        alpha = alpha_0 / np.sqrt(k+1)
+        α = α_0 / np.sqrt(k+1)
         # update λ & ρ
-        λ = updateLagrangeMultipliers(λ, violation, alpha)
+        λ = updateLagrangeMultipliers(λ, violation, α)
         ρ = updatePenaltyCoefficient(ρ, σ=1.1)
     # record time
     tock = time.time()
@@ -89,12 +89,12 @@ def updatePrimalSolution(df, num_customers, num_vehicles,
     return x
 
 
-def updateLagrangeMultipliers(λ, violation, alpha):
+def updateLagrangeMultipliers(λ, violation, α):
     """
     update Lagrange multipliers via projected subgradient
     """
     # update with subgradient
-    λ += alpha * violation
+    λ += α * violation
     # project onto the non-negative orthant
     λ = np.maximum(0, λ)
     return λ
@@ -116,5 +116,5 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    x, λ, ρ = solve(df, x_update_method="p")
+    x, λ, ρ = solve(df)
     #, λ, ρ = solve(df, num_customers=50, num_vehicles=5)
