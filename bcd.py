@@ -11,30 +11,61 @@ from gurobipy import GRB
 
 import utlis
 
-def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, method):
+def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, x_update_method):
     """
-    Block coordinates descent to update xj
+    Block coordinates descent to upda
     """
     # block coordinates descent
     for j in range(num_vehicles):
         # update xj
-        if method == "c":
+        if x_update_method == "c":
             # classical update
             x[j] = classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ)
-        if method == "p":
+        if x_update_method == "p":
+            # roximal linear update
             x[j] = proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ)
     return x
 
 
 def classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ):
     """
-    classical update step for block j using Gurobi to solve the integer linear problem
+    classical update step for block j
+    """
+    # objective coefficients
+    obj_coeffs = cj + Aj.T @ λ
+    temp = np.zeros_like(λ)
+    for l in range(num_vehicles):
+        if l != j:
+            temp += Aj @ x[l]
+    obj_coeffs += ρ * Aj.T @ (temp - 1/2)
+    # solve subproblem
+    xj = solveSubproblem(df, num_customers, obj_coeffs)
+    return xj
+
+
+def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ, τ=1.0):
+    """
+    proximal linear update step for block j
+    """
+    # constraints violation
+    violation = A @ x.flatten() - b
+    # compute gradient
+    grad_j = cj + Aj.T @ λ + ρ * Aj.T @ violation
+    # objective coefficients
+    obj_coeffs = τ * grad_j + 1/2 - x[j]
+    # solve subproblem
+    xj = solveSubproblem(df, num_customers, obj_coeffs)
+    return xj
+
+
+def solveSubproblem(df, num_customers, obj_coeffs):
+    """
+    use gurobi to solve subproblem as integer linear program
     """
     # number of nodes
     num_nodes = num_customers + 1
     # get sets
     edges = [(i, j) for i in range(num_nodes) for j in range(num_nodes) if i != j]
-    vehicles = list(range(num_vehicles))
     nodes = list(range(num_nodes))
     # get n customers
     df = df.iloc[:num_nodes]
@@ -53,15 +84,9 @@ def classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ):
     # disable output
     model.setParam('OutputFlag', 0)
     # decision variables
-    xj = model.addVars(edges, vtype=GRB.BINARY, name="x")
-    wj = model.addVars(nodes, vtype=GRB.CONTINUOUS, name="w")
+    xj = model.addVars(edges, vtype=GRB.BINARY, name="xj")
+    wj = model.addVars(nodes, vtype=GRB.CONTINUOUS, name="wj")
     # obj
-    obj_coeffs = cj + Aj.T @ λ
-    temp = np.zeros_like(λ)
-    for l in vehicles:
-        if l != j:
-            temp += Aj @ x[l]
-    obj_coeffs += ρ * Aj.T @ (temp - 1/2)
     model.setObjective(grb.quicksum(obj_coeffs[i] * xj[s, t]
                                     for i, (s, t) in enumerate(edges)),
                        GRB.MINIMIZE)
@@ -93,22 +118,3 @@ def classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ):
     # to numpy
     xj = utlis.sol2Numpy(xj)
     return xj
-
-
-def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ):
-    """
-    """
-    pass
-    return x[j]
-
-
-def toNumpy(xj):
-    """
-    convert
-    """
-    # init
-    xj_array = np.zeros(len(xj))
-    # assign value
-    for i, e in enumerate(xj):
-        xj_array[i] = xj[e].X
-    return xj_array

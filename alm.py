@@ -12,7 +12,7 @@ import greedy
 import utlis
 import bcd
 
-def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
+def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x_update_method="c"):
     """
     ALM main function
     """
@@ -31,7 +31,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
         # update x
         x = updatePrimalSolution(df, num_customers, num_vehicles,
                                  x, λ, ρ, cj, Aj, A, b,
-                                 t_max, tol, method="c")
+                                 t_max, tol, x_update_method)
         # constraints violation
         violation = A @ x.flatten() - b
         # violation norm
@@ -116,5 +116,5 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    x, λ, ρ = solve(df)
+    x, λ, ρ = solve(df, x_update_method="p")
     #, λ, ρ = solve(df, num_customers=50, num_vehicles=5)
