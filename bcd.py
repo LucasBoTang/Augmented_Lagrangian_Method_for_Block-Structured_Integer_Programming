@@ -50,9 +50,9 @@ def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ, τ=0.1):
     proximal linear update step for block j
     """
     # constraints violation
-    violation = np.abs(A @ x.flatten() - b)
+    violation = A @ x.flatten() - b
     # compute gradient
-    grad_j = cj + Aj.T @ λ + ρ * Aj.T @ violation
+    grad_j = cj + Aj.T @ λ + ρ * np.abs(Aj.T @ violation)
     # objective coefficients
     obj_coeffs = τ * grad_j + 1/2 - x[j]
     # solve subproblem

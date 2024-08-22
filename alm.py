@@ -35,7 +35,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
                                  x, λ, ρ, cj, Aj, A, b,
                                  t_max, tol, solution_pool, x_update_method)
         # constraints violation
-        violation = np.abs(A @ x.flatten() - b)
+        violation = A @ x.flatten() - b
         # violation norm
         violation_norm = np.linalg.norm(violation)
         # obj val
