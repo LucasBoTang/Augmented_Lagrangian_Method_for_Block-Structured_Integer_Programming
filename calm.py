@@ -28,6 +28,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
     solution_pool = [[] for _ in range(num_vehicles)]
     best_solution = None
     best_obj_val = float("inf")
+    optimality_gap = float("inf")
     # init step size
     α_0 = 0.1
     # init timer
@@ -45,7 +46,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
         # obj val
         objval = c @ x.flatten()
         # update tqdm description with violation norm
-        tqdm.write(f"Iteration {k+1}/{k_max}: Objective val = {objval:.4f}, Violation Norm = {violation_norm:.4f}")
+        tqdm.write(f"Iteration {k+1}/{k_max}: Objective val = {objval:.4f}, Violation Norm = {violation_norm:.4f}, Optimality Gap = {optimality_gap*100:.2f}%")
         # Find feasible solution if violation is detected
         if feasible_solution_method == "s":
             x_feasible = feasible_heuristic.sweeping(x, num_customers, num_vehicles, solution_pool, A, b)
@@ -57,6 +58,9 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
             if feasible_objval < best_obj_val:
                 best_obj_val = feasible_objval
                 best_solution = x_feasible
+        # calculate dual gap
+        if best_solution is not None:
+            optimality_gap = (best_obj_val - objval) / best_obj_val
         # termination condition
         if violation_norm < tol:
             tock = time.time()
@@ -72,7 +76,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
         ρ = updatePenaltyCoefficient(ρ, σ=1.1)
     # record time
     tock = time.time()
-    elpased = tock - tick
+    elapsed = tock - tick
     time.sleep(1)
     print()
     print(f"Reached maximum iterations ({k_max}) after {elapsed:.2f} sec.")
@@ -133,5 +137,5 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    x, λ, ρ = solve(df, x_update_method="p")
+    x, λ, ρ = solve(df)
     #x, λ, ρ = solve(df, num_customers=100, num_vehicles=10)
