@@ -4,6 +4,7 @@
 Augmented Lagrangian Method
 """
 
+import time
 import numpy as np
 from tqdm import tqdm
 
@@ -23,6 +24,8 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
     cj, Aj, c, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
     # init step size
     alpha_0 = 0.1
+    # init timer
+    tick = time.time()
     # iterations
     for k in tqdm(range(k_max)):
         # update x
@@ -39,12 +42,23 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
         tqdm.write(f"Iteration {k+1}/{k_max}: Objective val = {objval:.4f}, Violation Norm = {violation_norm:.4f}")
         # termination condition
         if violation_norm < tol:
+            tock = time.time()
+            elpased = tock - tick
+            time.sleep(1)
+            print()
+            print(f"Converged after {k+1} iterations within {elpased:.2f} sec")
             return x, λ, ρ
         # update step size
         alpha = alpha_0 / np.sqrt(k+1)
         # update λ & ρ
         λ = updateLagrangeMultipliers(λ, violation, alpha)
         ρ = updatePenaltyCoefficient(ρ, σ=1.1)
+    # record time
+    tock = time.time()
+    elpased = tock - tick
+    time.sleep(1)
+    print()
+    print(f"Reached maximum iterations ({k_max}) after {elapsed:.2f} sec.")
     return x, λ, ρ
 
 
