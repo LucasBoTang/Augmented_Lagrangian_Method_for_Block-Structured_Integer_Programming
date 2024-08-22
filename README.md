@@ -29,7 +29,9 @@ $$
 
 拉格朗日增广是一种用于解决带约束的优化问题的策略，它在拉格朗日函数的基础上，增加约束的二次惩罚项。以下是一个分块结构整数规划的拉格朗日增广模型：
 
-$$L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^T \mathbf{x} + \mathbf{\lambda}^T (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$$
+$$
+L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^T \mathbf{x} + \mathbf{\lambda}^T (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2
+$$
 
 其中，$\mathbf{\lambda} \geq \mathbf{0}$是拉格朗日乘子向量，$\rho > 0$是二次项的惩罚参数。相应的增广拉格朗日松弛问题如下：
 
