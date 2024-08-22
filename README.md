@@ -6,13 +6,13 @@
 
 因此，作者在传统的增广拉格朗日法(Augmented Lagrangian Method, ALM)迭代求解的基础上进行了创新，通过引入一种新的分解技术，将增广拉格朗日函数的最小化分解为多个简单的子问题。这些子问题可以独立地使用块坐标下降法（Block Coordinate Descent, BCD）来求解。作者也在理论上证明了始问题和增广拉格朗日对偶问题之间的强对偶性，也对块坐标下降方法和增广拉格朗日方法的收敛性进行了理论分析。
 
-### 2. 分块结构整数规划问题模型 
+### 2. 分块结构整数规划问题模型
 
 我们考虑一个带有块结构的整数规划问题，该问题的数学模型可以表示为：
 
-$$ 
+$$
 \begin{align}
-f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{\intercal} \mathbf{x} \\
+f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^T \mathbf{x} \\
 \text{s.t.} \quad & \mathbf{A} \mathbf{x} \leq \mathbf{b}, \\
 & \mathbf{x}_j \in \mathcal{X}_j, \quad j = 1, 2, \ldots, p,
 \end{align}
@@ -21,14 +21,14 @@ $$
 其中：
 
 - $\mathbf{x}$是决策变量向量，它被分为$p$个子块。
-- $\mathbf{c}^{\intercal} \mathbf{x}$是线性目标函数，$\mathbf{c}$是目标函数的系数向量。
+- $\mathbf{c}^T \mathbf{x}$是线性目标函数，$\mathbf{c}$是目标函数的系数向量。
 - $\mathbf{A} \mathbf{x} \leq \mathbf{b}$是全局线性不等式约束，这些约束将所有的决策变量 $\mathbf{x}$ 耦合在一起。
 - 每个子块$\mathbf{x}_j$需要满足特定的整数约束条件$\mathcal{X}_j = \{\mathbf{x}_j \in \{0,1\}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j\}$。
 
 ### 3. 增广拉格朗日方法
 
 拉格朗日增广是一种用于解决带约束的优化问题的策略，它在拉格朗日函数的基础上，增加约束的二次惩罚项。以下是一个分块结构整数规划的拉格朗日增广模型：
-$$L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^{\intercal} \mathbf{x} + \mathbf{\lambda}^{\intercal} (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$$
+$$L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^T \mathbf{x} + \mathbf{\lambda}^T (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$$
 
 其中，$\mathbf{\lambda} \geq \mathbf{0}$是拉格朗日乘子向量，$\rho > 0$是二次项的惩罚参数。相应的增广拉格朗日松弛问题如下：
 $$
@@ -134,12 +134,12 @@ $$\mathbf{x}^{t+1}_j := \min_{\mathbf{x}_j \in \mathcal{X}_j} L(\mathbf{x}_j | \
 
 给定固定的参数$\mathbf{\lambda} \geq \mathbf{0}$和$\rho > 0$，我们也可以计算$L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$在$\mathbf{x}^t$处的梯度：
 $$
-g_j(\mathbf{x}^t) := \nabla_{\mathbf{x}_j}  L(\mathbf{x}, \mathbf{\lambda}, {\rho}) = \mathbf{c}_j + \mathbf{A}_j^{\intercal} \mathbf{\lambda} + \rho \mathbf{A}_j^{\intercal} (\mathbf{A} \mathbf{x}^t - \mathbf{b})_{+}
+g_j(\mathbf{x}^t) := \nabla_{\mathbf{x}_j}  L(\mathbf{x}, \mathbf{\lambda}, {\rho}) = \mathbf{c}_j + \mathbf{A}_j^T \mathbf{\lambda} + \rho \mathbf{A}_j^T (\mathbf{A} \mathbf{x}^t - \mathbf{b})_{+}
 $$
 
-近线性（Proximal Linear）方法可以利用这个一阶梯度$g_j(\mathbf{x}^t)$，将增广拉格朗日函数在点$\mathbf{x}^t$处线性近似为${g_j(\mathbf{x}^t)}^{\intercal} (\mathbf{x}_j - \mathbf{x}^t_j)$，同时忽略其高阶项。这种近似减少了计算的复杂性，同时保留了函数的主要变化趋势。接着，在线性化的目标函数中加入一个二次正则化项$\| \mathbf{x}_j - \mathbf{x}^t_j \|^2$，以促进解的稳定性，并防止更新步骤过大。可得：
+近线性（Proximal Linear）方法可以利用这个一阶梯度$g_j(\mathbf{x}^t)$，将增广拉格朗日函数在点$\mathbf{x}^t$处线性近似为${g_j(\mathbf{x}^t)}^T (\mathbf{x}_j - \mathbf{x}^t_j)$，同时忽略其高阶项。这种近似减少了计算的复杂性，同时保留了函数的主要变化趋势。接着，在线性化的目标函数中加入一个二次正则化项$\| \mathbf{x}_j - \mathbf{x}^t_j \|^2$，以促进解的稳定性，并防止更新步骤过大。可得：
 $$
-\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {g_j(\mathbf{x}^t)}^{\intercal} (\mathbf{x}_j - \mathbf{x}^t_j) + \frac{1}{\tau} \| \mathbf{x}_j - \mathbf{x}^t_j \|^2
+\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {g_j(\mathbf{x}^t)}^T (\mathbf{x}_j - \mathbf{x}^t_j) + \frac{1}{\tau} \| \mathbf{x}_j - \mathbf{x}^t_j \|^2
 $$
 其中，$\tau$是步长参数，它是一个正数，用于控制更新的幅度；$\mathbf{x}^t_j$是在第$t$次迭代中块$j$的当前值。
 
@@ -149,13 +149,13 @@ $$
 $$
 
 一般来说，由于目标函数中的二次项，这个子问题并不容易求解。得益于$\mathbf{x}$是二元（0-1）变量，我们有
-$$\| \mathbf{x}_j \|^2 = \mathbf{1}^{\intercal} \mathbf{x}_j,
+$$\| \mathbf{x}_j \|^2 = \mathbf{1}^T \mathbf{x}_j,
 $$
 这里的$\mathbf{1}$是一个所有元素都是1的向量。这允许我们将原问题的二次部分线性化，进一步简化为一个整数线性问题，从而简化了求解过程：
 $$
 \begin{align}
-\mathbf{x}^{t+1}_j & \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \mathbf{1}^{\intercal} \mathbf{x}_j - 2 {\mathbf{x}_j^t}^{\intercal} \mathbf{x}_j + 2 \tau {g_j(\mathbf{x}^t)}^{\intercal} \mathbf{x}_j \\
-& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} { \Big( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \Big)}^{\intercal} \mathbf{x}_j
+\mathbf{x}^{t+1}_j & \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \mathbf{1}^T \mathbf{x}_j - 2 {\mathbf{x}_j^t}^T \mathbf{x}_j + 2 \tau {g_j(\mathbf{x}^t)}^T \mathbf{x}_j \\
+& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} { \Big( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \Big)}^T \mathbf{x}_j
 \end{align}
 $$
 
@@ -167,7 +167,7 @@ $$
 
 在这些假设下，对于块坐标下降过程中的每一块 $\mathbf{x}_j$，不等式 $\mathbf{A}_j \mathbf{x}^t_j \leq \mathbf{1}$ 始终有效。利用这一特殊结构，作者能够推导出子问题的简化形式，将原本复杂的子问题线性化，并确保了算法在每一步都能产生满足约束条件的解：
 $$
-\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {\Big( \mathbf{c}_j + \mathbf{A}_j^{\intercal} \mathbf{\lambda} + \rho \mathbf{A}_j^{\intercal} (\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2})_+ \Big)}^{\intercal} \mathbf{x}_j
+\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {\Big( \mathbf{c}_j + \mathbf{A}_j^T \mathbf{\lambda} + \rho \mathbf{A}_j^T (\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2})_+ \Big)}^T \mathbf{x}_j
 $$
 
 通过这种简化，增广拉格朗日函数 $\min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}, {\rho})$ 被分解为一系列具有线性目标函数的子问题。这种分解不仅降低了问题的复杂性，而且使得每个子问题更容易求解，从而提高了整个算法的效率。
@@ -218,8 +218,8 @@ $$
 这种方法将问题转化为一个受限的主问题，其中块坐标下降法过程中生成的解通过列生成技术逐步加入到主问题中，以寻找最佳的解组合。优化问题的数学表达如下：
 $$
 \begin{align}
-\min & \sum_{j=1}^{p} \mathbf{c}_j^{\intercal} X_j^k \mathbf{\mu}_j \\
-\text{s.t.} \quad & \mathbf{\mu}_j^{\intercal} \mathbf{1} \leq 1, \quad \forall j = 1, \dots, p \\
+\min & \sum_{j=1}^{p} \mathbf{c}_j^T X_j^k \mathbf{\mu}_j \\
+\text{s.t.} \quad & \mathbf{\mu}_j^T \mathbf{1} \leq 1, \quad \forall j = 1, \dots, p \\
 & \sum_{j=1}^{p} \mathbf{A}_j X_j^k \mathbf{\mu}_j \leq \mathbf{b}
 \end{align}
 $$
