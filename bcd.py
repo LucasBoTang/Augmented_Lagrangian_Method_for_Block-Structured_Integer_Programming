@@ -11,9 +11,9 @@ from gurobipy import GRB
 
 import utlis
 
-def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, x_update_method):
+def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, solution_pool, x_update_method):
     """
-    Block coordinates descent to upda
+    Block coordinates descent to update xj
     """
     # block coordinates descent
     for j in range(num_vehicles):
@@ -24,6 +24,8 @@ def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, x_update_m
         if x_update_method == "p":
             # roximal linear update
             x[j] = proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ)
+        # add the feasible solution to the solution pool
+        solution_pool[j].append(x[j])
     return x
 
 

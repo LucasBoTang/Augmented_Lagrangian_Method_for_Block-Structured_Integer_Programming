@@ -22,6 +22,8 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
     x, λ, ρ = initialize(df, num_customers, num_vehicles)
     # get global constraints
     cj, Aj, c, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
+    # initialize solution pool
+    solution_pool = [[] for _ in range(num_vehicles)]
     # init step size
     α_0 = 0.1
     # init timer
@@ -31,7 +33,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
         # update x
         x = updatePrimalSolution(df, num_customers, num_vehicles,
                                  x, λ, ρ, cj, Aj, A, b,
-                                 t_max, tol, x_update_method)
+                                 t_max, tol, solution_pool, x_update_method)
         # constraints violation
         violation = A @ x.flatten() - b
         # violation norm
@@ -73,14 +75,14 @@ def initialize(df, num_customers, num_vehicles):
 
 
 def updatePrimalSolution(df, num_customers, num_vehicles,
-                         x, λ, ρ, cj, Aj, A, b, t_max, tol, method):
+                         x, λ, ρ, cj, Aj, A, b, t_max, tol, solution_pool, method):
     """
     update primal solution with BCD method
     """
     # iterations
     for t in range(t_max):
         x_new = bcd.descent(df, num_customers, num_vehicles,
-                            x, λ, ρ, cj, Aj, A, b, method)
+                            x, λ, ρ, cj, Aj, A, b, solution_pool, method)
         # termination condition
         if np.linalg.norm(x_new - x) < tol:
             return x_new
@@ -116,5 +118,5 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    x, λ, ρ = solve(df)
-    #, λ, ρ = solve(df, num_customers=50, num_vehicles=5)
+    x, λ, ρ = solve(df, x_update_method="p")
+    #x, λ, ρ = solve(df, num_customers=100, num_vehicles=10)
