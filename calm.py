@@ -39,7 +39,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
                                  x, λ, ρ, cj, Aj, A, b,
                                  t_max, tol, solution_pool, x_update_method)
         # constraints violation
-        violation = A @ x.flatten() - b
+        violation = np.abs(A @ x.flatten() - b)
         # violation norm
         violation_norm = np.linalg.norm(violation)
         # obj val
@@ -48,7 +48,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
         tqdm.write(f"Iteration {k+1}/{k_max}: Objective val = {objval:.4f}, Violation Norm = {violation_norm:.4f}")
         # Find feasible solution if violation is detected
         if feasible_solution_method == "s":
-            x_feasible = feasible_heuristic.sweeping(x, num_customers, num_vehicles, solution_pool)
+            x_feasible = feasible_heuristic.sweeping(x, num_customers, num_vehicles, solution_pool, A, b)
         elif feasible_solution_method == "p":
             x_feasible = feasible_heuristic.packing(x, num_customers, num_vehicles, solution_pool)
         # update best feasible solution
