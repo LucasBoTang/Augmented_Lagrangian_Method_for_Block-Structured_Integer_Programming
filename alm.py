@@ -20,7 +20,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
     # initialize problem
     x, λ, ρ = initialize(df, num_customers, num_vehicles)
     # get global constraints
-    cj, Aj, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
+    cj, Aj, c, A, b = utlis.getCoefficients(df, num_customers, num_vehicles)
     # init step size
     alpha_0 = 0.1
     # iterations
@@ -33,8 +33,10 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2):
         violation = A @ x.flatten() - b
         # violation norm
         violation_norm = np.linalg.norm(violation)
+        # obj val
+        objval = c @ x.flatten()
         # update tqdm description with violation norm
-        tqdm.write(f"Iteration {k+1}/{k_max}: Violation Norm = {violation_norm:.4f}")
+        tqdm.write(f"Iteration {k+1}/{k_max}: Objective val = {objval:.4f}, Violation Norm = {violation_norm:.4f}")
         # termination condition
         if violation_norm < tol:
             return x, λ, ρ
@@ -52,7 +54,7 @@ def initialize(df, num_customers, num_vehicles):
     """
     x_init = greedy.solve(df, num_customers, num_vehicles)
     λ_init = np.zeros(num_customers)
-    ρ_init = 10
+    ρ_init = 1
     return x_init, λ_init, ρ_init
 
 
@@ -100,4 +102,5 @@ if __name__ == "__main__":
     df = data.getData()
 
     # get model
-    x, λ, ρ = solve(df, num_customers=50, num_vehicles=5)
+    x, λ, ρ = solve(df)
+    #, λ, ρ = solve(df, num_customers=50, num_vehicles=5)

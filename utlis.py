@@ -13,10 +13,11 @@ def getCoefficients(df, num_customers, num_vehicles):
     get constraints coefficient c, A & b
     """
     cj = generateCj(df)
+    c = np.hstack([cj] * num_vehicles)
     Aj = generateAj(num_customers)
     A = np.hstack([Aj] * num_vehicles)
     b = np.ones(num_customers)
-    return cj, Aj, A, b
+    return cj, Aj, c, A, b
 
 
 def generateCj(df):
