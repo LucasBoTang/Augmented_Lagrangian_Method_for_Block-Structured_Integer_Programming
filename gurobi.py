@@ -3,6 +3,8 @@
 """
 Solve with Gurobi
 """
+
+import time
 from scipy.spatial.distance import cdist
 import numpy as np
 import gurobipy as grb
@@ -12,6 +14,8 @@ def solve(df, num_customers=25, num_vehicles=3):
     """
     Gurobi model
     """
+    # init timer
+    tick = time.time()
     # number of nodes
     num_nodes = num_customers + 1
     # get sets
@@ -72,6 +76,10 @@ def solve(df, num_customers=25, num_vehicles=3):
     model.addConstrs(w[j, s] <= due_date[s] for j in vehicles for s in nodes)
     # solve
     model.optimize()
+    # record time
+    tock = time.time()
+    elapsed = tock - tick
+    print(f"Elapsed time: {elapsed:.2f} sec.")
     return model
 
 
