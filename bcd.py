@@ -43,7 +43,7 @@ def classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ):
     return xj
 
 
-def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ, τ=1.0):
+def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ, τ=0.1):
     """
     proximal linear update step for block j
     """
