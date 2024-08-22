@@ -4,7 +4,7 @@
 
 “A Customized Augmented Lagrangian Method for Block-Structured Integer Programming”这篇文章研究了具有分块结构整数线性规划（Block-Structured Integer Programming, BSIP）问题，并提出了一种定制化的增广拉格朗日方法来求解这类问题。文章中提到，这类问题因其在列车时刻表、车辆路径规划等众多实际应用中的普遍性而备受关注。但由于这类问题存在整数变量，是NP-hard的，不存在已知的多项式时间算法来提供精确解。
 
-因此，作者在传统的增广拉格朗日法(Augmented Lagrangian Method, ALM)迭代求解的基础上进行了创新，通过引入一种新的分解技术，将增广拉格朗日函数的最小化分解为多个简单的子问题。这些子问题可以独立地使用块坐标下降法（Block Coordinate Descent, BCD）来求解。作者也在理论上证明了始问题和增广拉格朗日对偶问题之间的强对偶性，也对块坐标下降方法和增广拉格朗日方法的收敛性进行了理论分析。
+因此，作者在传统的增广拉格朗日法（Augmented Lagrangian Method, ALM）迭代求解的基础上进行了创新，通过引入一种新的分解技术，将增广拉格朗日函数的最小化分解为多个简单的子问题。这些子问题可以独立地使用块坐标下降法（Block Coordinate Descent, BCD）来求解。作者也在理论上证明了始问题和增广拉格朗日对偶问题之间的强对偶性，也对块坐标下降方法和增广拉格朗日方法的收敛性进行了理论分析。
 
 ### 2. 分块结构整数规划问题模型
 
@@ -47,9 +47,9 @@ $$
 
 #### 3.2 迭代步骤
 
-增广拉格朗日方法的迭代过程通常包括以下步骤：
+在每一步 $k$，增广拉格朗日方法的迭代过程通常包括以下步骤：
 
-1. 在每一步 $k$，我们需要求解子问题以更新决策变量$\mathbf{x}^{k+1} := \arg \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$
+1. 求解子问题以更新决策变量$\mathbf{x}^{k+1} := \arg \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$
 2. 更新乘子$\mathbf{\lambda}^{k+1}$
 3. 更新惩罚参数${\rho}^{k+1}$
 
@@ -61,7 +61,7 @@ $$
 \frac{1}{2} \| (\mathbf{A} \mathbf{x}^k - \mathbf{b})_+ \| \in \partial_{\rho} d(\mathbf{\lambda}^k, {\rho}^k)
 $$
 
-鉴于乘子 $\mathbf{\lambda}$ 和惩罚参数 $\rho$ 必须满足非负条件，即$\mathbf{\lambda} \geq \mathbf{0}, \rho > 0$，我们可以通过投影次梯度方法（Projected Subgradient Method）来更新这些参数，确保它们在更新后仍然满足非负性约束：
+鉴于乘子 $\mathbf{\lambda}$ 和惩罚参数 $\rho$ 必须满足非负条件，即$\mathbf{\lambda} \geq \mathbf{0}, \rho > 0$，我们可以通过投影次梯度方法（Projected Subgradient Method）来更新这些参数，确保它们在更新后仍然满足非负性：
 
 $$
 \begin{align}
@@ -70,7 +70,7 @@ $$
 \end{align}
 $$
 
-然而，在论文的实验部分更新参数的方式有所不同。具体来说，作者使用了比例因子$\sigma$逐步增加惩罚参数$\rho$，以加大对违反约束条件的惩罚力度。因此，$\rho$实际上会按以下方式更新：
+然而，在论文的实验部分更新惩罚参数$\rho$的方式有所不同。具体来说，作者使用了比例因子$\sigma$逐步增加惩罚参数$\rho$，以加大对违反约束条件的惩罚力度。因此，$\rho$实际上会按以下方式更新：
 $$
 \rho^{k+1} := \sigma  \cdot \rho^{k}
 $$
@@ -119,11 +119,11 @@ $$
 
 在增广拉格朗日方法的迭代过程中，决策变量$\mathbf{x} := \arg \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$没有封闭形式的解，但我们可以应用迭代方法来精确或近似地求解它。
 
-增广拉格朗日函数通过将全局约束嵌入目标函数，实现了约束条件的解耦。然而，由于函数中包含的二次项$\frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$，并不能直接将其分解成$p$个独立的子问题来分别求解，因为它们相互之间在目标函数上存在耦合。
+增广拉格朗日函数通过将全局约束嵌入目标函数，实现了约束条件的解耦。然而，由于函数中包含的二次项$\frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$，决策变量相互之间在目标函数上存在耦合，并不能直接将其分解成$p$个独立的子问题来分别求解。
 
 基于原问题的特殊结构，作者提出了一种全新的块坐标下降方法。该方法通过将决策变量$\mathbf{x}$分为多个子块，通过按顺序循环迭代$\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_p$来最小化函数，从而逼近问题的最优解:
 $$\mathbf{x}^{t+1}_j := \min_{\mathbf{x}_j \in \mathcal{X}_j} L(\mathbf{x}_j | \mathbf{x}^{t+1}_1, \ldots, \mathbf{x}^{t+1}_{j-1}, \mathbf{x}^t_{j+1}, \ldots, \mathbf{x}^t_p, \mathbf{\lambda}^k, {\rho}^k)$$
-其中，其他块全部固定，只优化当前块$\mathbf{x}_j$。
+在优化子块$j$时，其他块全部固定，只优化当前块$\mathbf{x}_j$。
 
 论文中讨论了两种具体的块坐标更新方法：
 
