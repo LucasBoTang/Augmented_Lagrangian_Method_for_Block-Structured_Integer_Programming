@@ -7,7 +7,7 @@ Create Pandas DataFrame for C102
 import pandas as pd
 
 # file path
-file_path = "c102.txt"
+file_path = "..\data\c102.txt"
 # column name
 columns = ["CUST NO.", "XCOORD.", "YCOORD.", "DEMAND", "READY TIME", "DUE DATE", "SERVICE TIME"]
 
@@ -15,7 +15,7 @@ def getData(file_path=file_path):
     # init data
     data = []
     # open file
-    with open("c102.txt", "r") as file:
+    with open(file_path, "r") as file:
         # skip first row
         next(file)
         # read file
