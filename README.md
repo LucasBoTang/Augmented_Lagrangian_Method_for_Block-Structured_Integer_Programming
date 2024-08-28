@@ -380,7 +380,7 @@ In the paper, the authors do not provide detailed discussions regarding the init
 
 The initial Lagrange multipliers $\mathbf{\lambda}^0$ are set to the zero vector, and the initial penalty parameter $\mathbf{\lambda}^0$ is set to 1.
 
-#### 7.5 #### Finding Feasible Solutions
+#### 7.5 Finding Feasible Solutions
 
 In the customized Augmented Lagrangian Method proposed in the paper, an additional heuristic algorithm is introduced to find feasible solutions during the iteration process. The implementation of this can be found in `calm.py`.
 
