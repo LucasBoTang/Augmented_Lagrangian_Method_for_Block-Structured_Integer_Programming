@@ -12,7 +12,7 @@ We consider an integer programming problem with a block structure, which can be 
 
 $$
 \begin{align}
-f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{\intercal} \mathbf{x} \\
+f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{T} \mathbf{x} \\
 \text{s.t.} \quad & \mathbf{A} \mathbf{x} \leq \mathbf{b}, \\
 & \mathbf{x}_j \in \mathcal{X}_j, \quad j = 1, 2, \ldots, p,
 \end{align}
@@ -20,7 +20,7 @@ $$
 
 Where:
 - $\mathbf{x}$ is the decision variable vector, which is divided into $p$ sub-blocks as $\mathbf{x}_j$.
-- $\mathbf{c}^{\intercal} \mathbf{x}$ is the linear objective function, and $\mathbf{c}$ is the coefficient vector of the objective function.
+- $\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}$ is the coefficient vector of the objective function.
 - $\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}$ together.
 - Each sub-block $\mathbf{x}_j$ needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
 
@@ -29,7 +29,7 @@ Where:
 The Augmented Lagrangian method is a strategy used to solve constrained optimization problems. It builds upon the Lagrangian function by adding a quadratic penalty term for the constraints. The following is the Augmented Lagrangian model for a block-structured integer programming problem:
 
 $$
-L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^{\intercal} \mathbf{x} + \mathbf{\lambda}^{\intercal} (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2
+L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^{T} \mathbf{x} + \mathbf{\lambda}^{T} (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2
 $$
 
 Here, $\mathbf{\lambda} \geq \mathbf{0}$ is the Lagrange multiplier vector, and $\rho > 0$ is the penalty parameter for the quadratic term. The corresponding augmented Lagrangian relaxation problem is as follows:
@@ -160,13 +160,13 @@ The paper discusses two specific methods for updating block coordinates:
 Given fixed parameters $\mathbf{\lambda} \geq \mathbf{0}$ and $\rho > 0$, we can compute the gradient of $L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$ at $\mathbf{x}^t$ as follows:
 
 $$
-g_j(\mathbf{x}^t) := \nabla_{\mathbf{x}_j}  L(\mathbf{x}, \mathbf{\lambda}, {\rho}) = \mathbf{c}_j + \mathbf{A}_j^{\intercal} \mathbf{\lambda} + \rho \mathbf{A}_j^{\intercal} (\mathbf{A} \mathbf{x}^t - \mathbf{b})_{+}
+g_j(\mathbf{x}^t) := \nabla_{\mathbf{x}_j}  L(\mathbf{x}, \mathbf{\lambda}, {\rho}) = \mathbf{c}_j + \mathbf{A}_j^{T} \mathbf{\lambda} + \rho \mathbf{A}_j^{T} (\mathbf{A} \mathbf{x}^t - \mathbf{b})_{+}
 $$
 
-The Proximal Linear method can utilize this first-order gradient $g_j(\mathbf{x}^t)$ to linearly approximate the augmented Lagrangian function at the point $\mathbf{x}^t$ as ${g_j(\mathbf{x}^t)}^{\intercal} (\mathbf{x}_j - \mathbf{x}^t_j)$, while ignoring its higher-order terms. This approximation reduces the computational complexity while preserving the primary trend of the function. Then, a quadratic regularization term $| \mathbf{x}_j - \mathbf{x}^t_j |^2$ is added to the linearized objective function to promote solution stability and prevent too-large update steps. This results in the following expression:
+The Proximal Linear method can utilize this first-order gradient $g_j(\mathbf{x}^t)$ to linearly approximate the augmented Lagrangian function at the point $\mathbf{x}^t$ as ${g_j(\mathbf{x}^t)}^{T} (\mathbf{x}_j - \mathbf{x}^t_j)$, while ignoring its higher-order terms. This approximation reduces the computational complexity while preserving the primary trend of the function. Then, a quadratic regularization term $| \mathbf{x}_j - \mathbf{x}^t_j |^2$ is added to the linearized objective function to promote solution stability and prevent too-large update steps. This results in the following expression:
 
 $$
-\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {g_j(\mathbf{x}^t)}^{\intercal} (\mathbf{x}_j - \mathbf{x}^t_j) + \frac{1}{\tau} \| \mathbf{x}_j - \mathbf{x}^t_j \|^2
+\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {g_j(\mathbf{x}^t)}^{T} (\mathbf{x}_j - \mathbf{x}^t_j) + \frac{1}{\tau} \| \mathbf{x}_j - \mathbf{x}^t_j \|^2
 $$
 
 where $\tau$ is the step size parameter, a positive value used to control the magnitude of the update; $\mathbf{x}^t_j$ is the current value of block $j$ in the $t$-th iteration.
@@ -180,15 +180,15 @@ $$
 Generally, this subproblem is not easy to solve due to the quadratic term in the objective function. However, since $\mathbf{x}$ is a binary (0-1) variable, we have:
 
 $$
-\| \mathbf{x}_j \|^2 = \mathbf{1}^{\intercal} \mathbf{x}_j,
+\| \mathbf{x}_j \|^2 = \mathbf{1}^{T} \mathbf{x}_j,
 $$
 
 where $\mathbf{1}$ is a vector with all elements equal to $1$. This allows us to linearize the quadratic part of the original problem, further simplifying it into an integer linear problem, thus facilitating the solution process:
 
 $$
 \begin{align}
-\mathbf{x}^{t+1}_j & \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \mathbf{1}^{\intercal} \mathbf{x}_j - 2 {\mathbf{x}_j^t}^{\intercal} \mathbf{x}_j + 2 \tau {g_j(\mathbf{x}^t)}^{\intercal} \mathbf{x}_j \\
-& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} { \Big( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \Big)}^{\intercal} \mathbf{x}_j
+\mathbf{x}^{t+1}_j & \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \mathbf{1}^{T} \mathbf{x}_j - 2 {\mathbf{x}_j^t}^{T} \mathbf{x}_j + 2 \tau {g_j(\mathbf{x}^t)}^{T} \mathbf{x}_j \\
+& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} { \Big( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \Big)}^{T} \mathbf{x}_j
 \end{align}
 $$
 
@@ -202,7 +202,7 @@ In the paper, to simplify the solution of subproblems, the authors propose a set
 Under these assumptions, for each block $\mathbf{x}_j$ in the Block Coordinate Descent process, the inequality $\mathbf{A}_j \mathbf{x}^t_j \leq \mathbf{1}$ always holds. With this special structure, the authors can derive a simplified form of the subproblem, linearizing the originally complex subproblem and ensuring that the algorithm produces a solution that satisfies the constraints $\mathcal{X}_j$ at each step:
 
 $$
-\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {\Big( \mathbf{c}_j + \mathbf{A}_j^{\intercal} \mathbf{\lambda} + \rho \mathbf{A}_j^{\intercal} (\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2})_+ \Big)}^{\intercal} \mathbf{x}_j
+\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {\Big( \mathbf{c}_j + \mathbf{A}_j^{T} \mathbf{\lambda} + \rho \mathbf{A}_j^{T} (\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2})_+ \Big)}^{T} \mathbf{x}_j
 $$
 
 Through this simplification, the augmented Lagrangian function $\min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}, {\rho})$ is decomposed into a series of subproblems with linear objective functions. This decomposition not only reduces the complexity of the problem but also makes each subproblem easier to solve, thereby improving the overall efficiency of the algorithm.
@@ -257,8 +257,8 @@ This approach transforms the problem into a restricted master problem, where the
 
 $$
 \begin{align}
-\min & \sum_{j=1}^{p} \mathbf{c}_j^{\intercal} X_j^k \mathbf{\mu}_j \\
-\text{s.t.} \quad & \mathbf{\mu}_j^{\intercal} \mathbf{1} \leq 1, \quad \forall j = 1, \dots, p \\
+\min & \sum_{j=1}^{p} \mathbf{c}_j^{T} X_j^k \mathbf{\mu}_j \\
+\text{s.t.} \quad & \mathbf{\mu}_j^{T} \mathbf{1} \leq 1, \quad \forall j = 1, \dots, p \\
 & \sum_{j=1}^{p} \mathbf{A}_j X_j^k \mathbf{\mu}_j \leq \mathbf{b}
 \end{align}
 $$
