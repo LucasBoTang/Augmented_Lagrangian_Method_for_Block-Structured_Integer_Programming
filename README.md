@@ -32,10 +32,10 @@ f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{T} \mathbf{x} \\
 $$
 
 Where:
-- $\mathbf{x}\mathbf{x}$ is the decision variable vector, which is divided into pp sub-blocks as $\mathbf{x}_j\mathbf{x}_j$.
-- $\mathbf{c}^{T} \mathbf{x}\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}\mathbf{c}$ is the coefficient vector of the objective function.
-- $\mathbf{A} \mathbf{x} \leq \mathbf{b}\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}\mathbf{x}$ together.
-- Each sub-block \mathbf{x}_j\mathbf{x}_j needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
+- $\mathbf{x}$ is the decision variable vector, which is divided into pp sub-blocks as $\mathbf{x}_j$.
+- $\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}$ is the coefficient vector of the objective function.
+- $\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}$ together.
+- Each sub-block $\mathbf{x}_j$ needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
 
 ### 3. Augmented Lagrangian Method for Solving Dual Problem Iteratively
 
