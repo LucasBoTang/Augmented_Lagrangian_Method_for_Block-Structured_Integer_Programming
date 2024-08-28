@@ -358,7 +358,11 @@ $$
 
 where $f(\mathbf{x})$ is the original objective function.
 
-The right-hand side value of the global constraint is $\mathbf{b} = 1$. For each vehicle $j$, the constraint matrix block $\mathbf{A}_j$ is a $(|V|-1) \times |E|$ matrix. Specifically, the rows of $\mathbf{A}_j$ correspond to each customer node $s$ (excluding the depot), and the columns correspond to each possible path $x^j_{st}$. If the path $(s, t)$ is included in the constraint, the corresponding matrix element is $1$; otherwise, it is $0$.
+The right-hand side value of the global constraint is $\mathbf{b} = 1$.
+For each vehicle $j$, the constraint matrix block $\mathbf{A}_j$ is a $(|V|-1) \times |E|$ matrix.
+Specifically, the rows of $\mathbf{A}_j$ correspond to each customer node $s$ (excluding the depot),
+and the columns correspond to each possible path $x^j_{st}$. If the path $(s, t)$ is included in the constraint, the corresponding matrix element is $1$; otherwise, it is $0$.
+
 
 For instance, suppose there are three customers (nodes 1, 2, and 3) and one depot (node 0). The matrix $\mathbf{A}_j$ can be represented as:
 
