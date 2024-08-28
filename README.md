@@ -7,7 +7,7 @@ In the repository, you can find the following code:
 - `c102.txt`: Contains the C102 instance from the Solomon dataset.
 - `data.py`: Reads and processes the Solomon dataset.
 - `alm.py`: Implements the core logic of the Augmented Lagrangian Algorithm.
-- `calm.py`: A customized Augmented Lagrangian Algorithm incorporating feasible solution finding based on `alm.py`.
+- `calm.py`: Incorporates feasible solution finding to `alm.py`.
 - `bcd.py`: Implements the Block Coordinate Descent method for updating decision variables in the Augmented Lagrangian Algorithm, supporting Proximal Linear and Classical Update strategies.
 - `greedy.py`: Implements a greedy algorithm for finding an initial feasible solution in the Block Coordinate Descent method.
 - `feasible_heuristic.py`: Contains the implementation of heuristic algorithms; currently includes the Sweeping Technique for finding feasible solutions during iterations.
@@ -32,10 +32,10 @@ f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{T} \mathbf{x} \\
 $$
 
 Where:
-- $\mathbf{x}$ is the decision variable vector, which is divided into $p$ sub-blocks as $\mathbf{x}_j$.
-- $\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}$ is the coefficient vector of the objective function.
-- $\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}$ together.
-- Each sub-block $\mathbf{x}_j$ needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
+- \mathbf{x}\mathbf{x} is the decision variable vector, which is divided into pp sub-blocks as \mathbf{x}_j\mathbf{x}_j.
+- \mathbf{c}^{T} \mathbf{x}\mathbf{c}^{T} \mathbf{x} is the linear objective function, and \mathbf{c}\mathbf{c} is the coefficient vector of the objective function.
+- \mathbf{A} \mathbf{x} \leq \mathbf{b}\mathbf{A} \mathbf{x} \leq \mathbf{b} represents the global linear inequality constraints that couple all decision variables \mathbf{x}\mathbf{x} together.
+- Each sub-block \mathbf{x}_j\mathbf{x}_j needs to satisfy specific integer constraints \mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}.
 
 ### 3. Augmented Lagrangian Method for Solving Dual Problem Iteratively
 
@@ -45,7 +45,7 @@ $$
 L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^{T} \mathbf{x} + \mathbf{\lambda}^{T} (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2
 $$
 
-Here, $\mathbf{\lambda} \geq \mathbf{0}$ is the Lagrange multiplier vector, and $\rho > 0$ is the penalty parameter for the quadratic term. The corresponding augmented Lagrangian relaxation problem is as follows:
+Here, \mathbf{\lambda} \geq \mathbf{0}\mathbf{\lambda} \geq \mathbf{0} is the Lagrange multiplier vector, and \rho > 0\rho > 0 is the penalty parameter for the quadratic term. The corresponding augmented Lagrangian relaxation problem is as follows:
 
 $$
 d(\mathbf{\lambda}, \rho) := \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}, \rho)
