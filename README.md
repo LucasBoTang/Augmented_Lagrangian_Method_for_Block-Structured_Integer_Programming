@@ -268,3 +268,109 @@ Due to global constraints, there may be conflicts between candidate solutions (i
 This method requires constructing a conflict graph $F = (V, E)$, where the node set $V$ represents all candidate solutions and the edge set $E$ represents their conflict relationships. If two solutions conflict (i.e., they cannot simultaneously satisfy certain constraints), an edge is established between them.
 
 However, the Maximal Independent Set problem is still NP-hard. The paper mentions that the problem being solved is a relaxed version of the Maximal Independent Set problem. By relaxing the problem, the computational complexity can be reduced to some extent, and a feasible solution can be found. However, the paper does not explicitly specify which algorithm handles this relaxed problem. One simple greedy algorithm is to choose the vertex with the fewest neighbors that have not yet been selected in the current graph and add it to the independent set until no more selections can be made.
+
+### 6. Experimental Results and Conclusion
+
+In the experimental section of the paper, the authors conducted numerical experiments to verify the effectiveness of the proposed Augmented Lagrangian Method in solving block-structured integer programming problems. The experiments involved several scenarios with practical applications, including train timetable scheduling and vehicle routing problems. These problems are large-scale and contain integer variables. The paper demonstrates the advantages compared to other existing methods in terms of solution efficiency and solution quality.
+
+- Solution Efficiency: The algorithm exhibited fast convergence in multiple instances, achieving satisfactory solutions within fewer iterations.
+- Solution Quality: The algorithm was able to find high-quality feasible solutions, often close to the global optimal solution.
+- Stability: The algorithm showed good stability and robustness across different test cases, maintaining performance even with large problem sizes or data variations.
+
+### 7. Code Reproduction
+
+This repository contains the method's implementation and scripts for handling the Solomon dataset.
+
+#### 7.1 Dataset
+
+In the "5.1 Capacitated Vehicle Routing Problem" section of the paper, the authors mention using the Solomon dataset to evaluate the performance of their proposed algorithm. The Solomon dataset is a standard set of test instances widely used for evaluating Vehicle Routing Problem (VRP) algorithms. These datasets include various parameters such as the number of vehicles, customers, service time windows, and vehicle capacity limits. Here, we use the C102 instance of the Solomon dataset to reproduce the algorithm.
+
+The C102 instance from the Solomon dataset was selected in this reproduction work. The C102 instance contains 100 customers (excluding the depot). In the paper, the authors considered different variants of the C102 instance to explore the algorithm's performance on problems of varying scales:
+
+- C102-25: The first 25 customers were selected, and $3$ vehicles were allocated.
+- C102-50: The first 50 customers were selected, with $5$ vehicles allocated.
+C102-100: All 100 customers were selected, with $10$ vehicles allocated.
+The dataset is stored in the file c102.txt and is processed by the `data.py` script.
+
+The original paper does not specify the exact setting for the maximum vehicle capacity. **Based on the authors' experimental results, we temporarily set it to 200 units.**
+
+#### 7.2 Mathematical Model
+
+For the Capacitated Vehicle Routing Problem (CVRP), we define the following notation:
+
+- $V$: The set of nodes, where $0$ represents the depot and $1$ to $n$ represent the customers.
+- $E$: The set of edges connecting the nodes.
+- $\mathbb{N}_p$: The set of vehicle indices.
+- $x^j_{st}$: Equals 1 if vehicle $j$ traverses the route from node $s$ to node $t$, and 0 otherwise.
+- $w^j_s$: The time when vehicle $j$ begins servicing customer $s$.
+- $d_{st}$: The distance from node $s$ to node $t$.
+- $c_s$: The demand of customer $s$.
+- $C$: The maximum capacity of the vehicle.
+- $T_{st}$: The time required to travel from node $s$ to node $t$.
+- $a_s$ and $b_s$: The start and end times of the service time window for customer $s$.
+- $M$: A sufficiently large constant used to ensure the time window constraints. **Since the paper does not specify the value of $M$, we set $M$ as the maximum value of the service time window's end time.**
+
+The mathematical model is formulated as follows:
+
+$$
+\begin{align}
+\min & \sum_{j \in \mathbb{N}_p} \sum_{(s,t) \in E} d_{st} x^j_{st} \\
+\text{s.t.} \quad & \sum_{j \in \mathbb{N}_p} \sum_{t \in V : t \neq s} x^j_{st} = 1, \quad & \forall s \in V \setminus \{0\} \\
+& \sum_{t \in V \setminus \{s\}} x^j_{st} = \sum_{t \in V \setminus \{s\}} x^j_{ts}, \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
+& \sum_{t \in V \setminus \{0\}} x^j_{0t} = 1, \quad & \forall j \in \mathbb{N}_p \\
+& \sum_{s \in V} \sum_{t \in V \setminus \{s\}} c_s x^j_{st} \leq C, \quad & \forall j \in \mathbb{N}_p \\
+& w^j_s + T_{st} - M(1 - x^j_{st}) \leq w^j_t, \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p \\
+& a_s \leq w^j_s \leq b_s, \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
+& x^j_{st} \in \{0, 1\} \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p, \\
+& w^j_s \geq 0 \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
+\end{align}
+$$
+
+Here, the objective function (11) minimizes the total distance traveled by all vehicles; constraint (12) ensures that each customer is served by exactly one vehicle; constraint (13) guarantees the flow conservation at each node, ensuring that the number of vehicles entering and leaving each node is balanced; constraint (14) ensures that each vehicle departs from and returns to the depot; constraint (15) ensures that the load on each vehicle does not exceed its capacity; constraint (16) restricts the service start time at each customer node to be within the time window; and constraint (17) requires that the arrival time of the vehicle at each customer node is within that node's time window.
+
+**Note: Although not mentioned in the original paper, constraint (16) should not apply to the depot $s = 0$, as it would otherwise render the model infeasible.**
+
+This Gurobi model is implemented in `gurobi.py`, and the solution obtained using the Gurobi solver serves as a benchmark for the algorithm's performance. The results are consistent with those reported in the paper, validating the model's accuracy.
+
+#### 7.3 Augmented Lagrangian Function
+
+Here, we observe that only constraint (12) is global. Relaxing constraint (12) can decompose the problem into individual path subproblems for each vehicle. Therefore, we can implement the Augmented Lagrangian Method (ALM).
+
+Let $\mathbf{\lambda}$ be the Lagrange multiplier associated with constraint (12), and $\rho > 0$ be the coefficient of the augmented term. The augmented Lagrangian function can then be expressed as:
+
+$$
+f(\mathbf{x}) + \sum_{s \in V \setminus \{0\}} {\lambda}_s \left(\sum_{j \in \mathbb{N}_p} \sum_{t \in V : t \neq s} x^j_{st} - 1 \right) + \frac{\rho}{2} \sum_{s \in V \setminus \{0\}} \left(\sum_{j \in \mathbb{N}_p} \sum_{t \in V : t \neq s} x^j_{st} - 1 \right)^2
+$$
+
+where $f(\mathbf{x})$ is the original objective function.
+
+The right-hand side value of the global constraint is $\mathbf{b} = 1$. For each vehicle $j$, the constraint matrix block $\mathbf{A}_j$ is a $(|V|-1) \times |E|$ matrix. Specifically, the rows of $\mathbf{A}j$ correspond to each customer node $s$ (excluding the depot), and the columns correspond to each possible path $x^j{st}$. If the path $(s, t)$ is included in the constraint, the corresponding matrix element is $1$; otherwise, it is $0$.
+
+For instance, suppose there are three customers (nodes 1, 2, and 3) and one depot (node 0). The matrix $\mathbf{A}_j$ can be represented as:
+
+$$
+\mathbf{A}_j =
+\begin{pmatrix}
+0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1
+\end{pmatrix}
+$$
+
+The Augmented Lagrangian Method can be found in the `alm.py` file, and the Block Coordinate Descent (BCD) method is in `bcd.py`.
+
+#### 7.4 Initial Values
+
+In the paper, the authors do not provide detailed discussions regarding the initial solution $\mathbf{x}^0$, the initial values for the Lagrange multipliers $\mathbf{\lambda}^0$, and the initial penalty parameter $\mathbf{\lambda}^0$ in the Augmented Lagrangian Method for the vehicle routing problem.
+
+**We used a greedy algorithm to find an appropriate initial solution $\mathbf{x}^0$ (implementation code can be found in `greedy.py`).** The core idea of this algorithm is: for the current node $s$, while ensuring compliance with time window constraints and vehicle capacity limits, select the next node $t$ that maximizes the value of $b_t - d_{st}$. Here, $b_t$ represents the end time of the time window constraint for node $t$, and $d_{st}$ is the distance (or time) from node $s$ to node $t$. This approach allows us to construct an initial route for each vehicle. Although this algorithm does not guarantee the satisfaction of all global constraints (i.e., visiting all nodes), it does satisfy the block constraints $\mathbf{x}_j \in \mathcal{X}_j$ (flow, time window, and capacity constraints), which is consistent with the convergence requirements discussed in the paper.
+
+The initial Lagrange multipliers $\mathbf{\lambda}^0$ are set to the zero vector, and the initial penalty parameter $\mathbf{\lambda}^0$ is set to 1.
+
+#### 7.5 #### Finding Feasible Solutions
+
+In the customized Augmented Lagrangian Method proposed in the paper, an additional heuristic algorithm is introduced to find feasible solutions during the iteration process. The implementation of this can be found in `calm.py`.
+
+In this context, the Sweeping Technique was attempted as a heuristic method to find the optimal solution, as implemented in `feasible_heuristic.py`. However, despite using the Sweeping Technique, no feasible solutions were found during the iteration process. This could be due to issues in the code reproduction or because the constraints in the vehicle routing problem are too complex to be solved directly using such a simple heuristic method.
+
+Given this, the Packing Technique might be a more promising solution. The Packing Technique involves constructing a conflict graph and heuristically finding the Maximal Independent Set within the graph to identify a feasible combination of solutions. This approach may be more suitable for handling optimization problems with complex constraints. However, due to time constraints, this solution has not yet been implemented.
