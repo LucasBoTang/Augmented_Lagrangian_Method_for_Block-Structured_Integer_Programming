@@ -10,7 +10,7 @@ In the repository, you can find the following code:
 - `calm.py`: Incorporates feasible solution finding to `alm.py`.
 - `bcd.py`: Implements the Block Coordinate Descent method for updating decision variables in the Augmented Lagrangian Algorithm, supporting Proximal Linear and Classical Update strategies.
 - `greedy.py`: Implements a greedy algorithm to find an initial feasible solution using the Block Coordinate Descent method.
-- `feasible_heuristic.py`: Implements of heuristic algorithms for finding feasible solutions during iterations, currently only includes the Sweeping Technique.
+- `feasible_heuristic.py`: Implements heuristic algorithms for finding feasible solutions during iterations, currently only includes the Sweeping Technique.
 - `gurobi.py`: Models and solves the problem using integer programming with Gurobi.
 
 ### 1. Overview
@@ -32,10 +32,10 @@ f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{T} \mathbf{x} \\
 $$
 
 Where:
-- $\mathbf{x}$ is the decision variable vector, which is divided into pp sub-blocks as $\mathbf{x}_j$.
+- $\mathbf{x}$ is the decision variable vector, which is divided into $p$ sub-blocks as $\mathbf{x}_j$.
 - $\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}$ is the coefficient vector of the objective function.
 - $\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}$ together.
-- Each sub-block $\mathbf{x}_j$ needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
+- Each sub-block $\mathbf{x}_j$ needs to satisfy specific integer constraints $\mathcal{X}_j = \{\mathbf{x}_j \in \{0,1\}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j\}$.
 
 ### 3. Augmented Lagrangian Method for Solving Dual Problem Iteratively
 
@@ -85,7 +85,7 @@ Given that the multipliers $\mathbf{\lambda}$ and the penalty parameter $\rho$ m
 $$
 \begin{align}
 \mathbf{\lambda}^{k+1} & := (\mathbf{\lambda}^k + \mathbf{\alpha}^k (\mathbf{A} \mathbf{x}^k - \mathbf{b}))_+, \\
-{\rho}^{k+1} & := {\rho}^{k} + \frac{\mathbf{\alpha}^k}{2} \| (\mathbf{A} \mathbf{x}^k - \mathbf{b})_+ \|。
+{\rho}^{k+1} & := {\rho}^{k} + \frac{\mathbf{\alpha}^k}{2} \| (\mathbf{A} \mathbf{x}^k - \mathbf{b})_+ \|.
 \end{align}
 $$
 
@@ -122,18 +122,18 @@ In the Augmented Lagrangian Method, the step size $\mathbf{\alpha}^k$ controls t
 Theoretically, the step size is calculated based on the norm of the subgradient of the dual function $d(\mathbf{\lambda}^k, {\rho}^k)$ and is determined by the following formula:
 
 $$
-\mathbf{\alpha}^k = \frac{{\beta}^k}{\| \nabla d(\mathbf{\lambda}^k, {\rho}^k) \|}。
+\mathbf{\alpha}^k = \frac{{\beta}^k}{\| \nabla d(\mathbf{\lambda}^k, {\rho}^k) \|}
 $$
 
 Through theoretical analysis, the authors propose a convergence condition for ${\beta}^k$: ${\beta}^k = \sqrt{\frac{\theta}{K}}$ and provide an upper bound on the duality gap under this convergence condition:
 
 $$
-\frac{\max_{\mathbf{x} \in \mathcal{x}} {\| \mathbf{A} \mathbf{x} - \mathbf{b} \|}^4}{2} \sqrt{\frac{5 \theta}{K}}。
+\frac{\max_{\mathbf{x} \in \mathcal{X}} {\| \mathbf{A} \mathbf{x} - \mathbf{b} \|}^4}{2} \sqrt{\frac{5 \theta}{K}}
 $$
 
 where $K$ is the maximum number of iterations, and $\theta$ is the minimum distance from the initial solution $(\mathbf{\lambda}^0, {\rho}^0)$ to the set of optimal solutions $S$.
 
-To ensure that the algorithm ultimately converges to the optimal solution of the original problem $(\mathbf{\lambda}^, {\rho}^)$, the paper further introduces two essential conditions:
+To ensure that the algorithm ultimately converges to the optimal solution of the original problem $(\mathbf{\lambda}^{\ast}, \rho^{\ast})$, the paper further introduces two essential conditions:
 
 - Divergence Condition: Ensures that the algorithm can iterate infinitely until convergence.
 
@@ -193,7 +193,7 @@ $$
 Generally, this subproblem is not easy to solve due to the quadratic term in the objective function. However, since $\mathbf{x}$ is a binary (0-1) variable, we have:
 
 $$
-\| \mathbf{x}_j \|^2 = \mathbf{1}^{T} \mathbf{x}_j,
+\| \mathbf{x}_j \|^2 = \mathbf{1}^{T} \mathbf{x}_j
 $$
 
 where $\mathbf{1}$ is a vector with all elements equal to $1$. This allows us to linearize the quadratic part of the original problem, further simplifying it into an integer linear problem, thus facilitating the solution process:
@@ -201,7 +201,7 @@ where $\mathbf{1}$ is a vector with all elements equal to $1$. This allows us to
 $$
 \begin{align}
 \mathbf{x}^{t+1}_j & \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \mathbf{1}^{T} \mathbf{x}_j - 2 {\mathbf{x}_j^t}^{T} \mathbf{x}_j + 2 \tau {g_j(\mathbf{x}^t)}^{T} \mathbf{x}_j \\
-& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} { \Big( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \Big)}^{T} \mathbf{x}_j
+& = \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \left( \tau {g_j(\mathbf{x}^t)}  + \frac{\mathbf{1}}{2} - \mathbf{x}_j^t \right)^{T} \mathbf{x}_j
 \end{align}
 $$
 
@@ -215,7 +215,7 @@ In the paper, to simplify the solution of subproblems, the authors propose a set
 Under these assumptions, for each block $\mathbf{x}_j$ in the Block Coordinate Descent process, the inequality $\mathbf{A}_j \mathbf{x}^t_j \leq \mathbf{1}$ always holds. With this special structure, the authors can derive a simplified form of the subproblem, linearizing the originally complex subproblem and ensuring that the algorithm produces a solution that satisfies the constraints $\mathcal{X}_j$ at each step:
 
 $$
-\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {\Big( \mathbf{c}_j + \mathbf{A}_j^{T} \mathbf{\lambda} + \rho \mathbf{A}_j^{T} (\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2})_+ \Big)}^{T} \mathbf{x}_j
+\mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} \left( \mathbf{c}_j + \mathbf{A}_j^{T} \mathbf{\lambda} + \rho \mathbf{A}_j^{T} \left(\sum_{l \neq j}^p \mathbf{A}_l \mathbf{x}_l^t - \frac{\mathbf{1}}{2}\right)_+ \right)^{T} \mathbf{x}_j
 $$
 
 Through this simplification, the augmented Lagrangian function $\min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}, {\rho})$ is decomposed into a series of subproblems with linear objective functions. This decomposition not only reduces the complexity of the problem but also makes each subproblem easier to solve, thereby improving the overall efficiency of the algorithm.
@@ -226,7 +226,7 @@ The convergence analysis provides theoretical guarantees that, under appropriate
 
 First, if the starting point satisfies $\mathbf{x}^0 \in \mathcal{X}$, the method is always executable and will terminate after a finite number of iterations, yielding the block optimal solution of the augmented Lagrangian relaxation problem $d(\mathbf{\lambda}, \rho)$, i.e., the block's variables are optimally chosen when the other blocks' variables are fixed.
 
-The paper proves that the gradient of the augmented Lagrangian function is Lipschitz continuous, which is key to ensuring global convergence. For all $\mathbf{x}, \mathbf{x}^{\prime} \in \mathcal{X}$, with $\kappa = \rho {\| \mathbf{A} \|}^2$, we have:
+The paper proves that the gradient of the augmented Lagrangian function is Lipschitz continuous, which is key to ensuring global convergence. For all $\mathbf{x}, \mathbf{x}^{\prime} \in \mathcal{X}$, with $\kappa = \rho \|\mathbf{A}\|^2$, we have:
 
 $$
 \| \nabla L(\mathbf{x}, \mathbf{\lambda}, {\rho}) - \nabla L(\mathbf{x}^{\prime}, \mathbf{\lambda}, {\rho}) \| \leq \kappa \| \mathbf{x} - \mathbf{x}^{\prime} \|
@@ -245,7 +245,7 @@ Therefore, the authors also discuss two techniques for finding high-quality, glo
 - Sweeping Technique
 - Packing Technique
 
-Both techniques rely on constructing a "solution pool" $V_j^k = { \mathbf{x}_j^1, \mathbf{x}_j^2, \ldots, \mathbf{x}_j^k }$ for each block $j$. The solution pool collects all feasible solutions obtained in previous iterations, providing a rich set of candidate solutions.
+Both techniques rely on constructing a "solution pool" $V_j^k = \{ \mathbf{x}_j^1, \mathbf{x}_j^2, \ldots, \mathbf{x}_j^k \}$ for each block $j$. The solution pool collects all feasible solutions obtained in previous iterations, providing a rich set of candidate solutions.
 
 #### 5.1 Sweeping Technique
 
@@ -254,7 +254,7 @@ The Sweeping Technique is an intuitive and efficient method for finding feasible
 For each block $j$ in the optimization problem, this technique operates as follows:
 
 1. Select a candidate solution $\mathbf{v}_j$ from the solution pool $V_j^k$.
-2. Check whether the current candidate solution $\mathbf{v}_j$ satisfies the global constraint of the problem $\mathbf{A}_j \mathbf{v}_j + \sum{l \neq j}^p \mathbf{A}_l \hat{\mathbf{x}}^k_l \leq \mathbf{b}$.
+2. Check whether the current candidate solution $\mathbf{v}_j$ satisfies the global constraint of the problem $\mathbf{A}_j \mathbf{v}_j + \sum_{l \neq j}^p \mathbf{A}_l \hat{\mathbf{x}}^k_l \leq \mathbf{b}$.
 3. If the candidate solution $\mathbf{v}_j$ is feasible, it is retained as the current solution for that block $\hat{\mathbf{x}}^k_j := \mathbf{v}_j$.
 4. If the candidate solution $\mathbf{v}_j$ is infeasible, set the solution for that block temporarily to zero (or another feasible initial state) and continue checking the next block in the sequence.
 
@@ -262,9 +262,9 @@ For large-scale problems or those with complex constraints, the Sweeping Techniq
 
 #### 5.2 Packing Technique
 
-The Packing Technique is used to select a set of solutions ${\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_p}$ from the candidate solution sets ${V_1^k, V_2^k, \ldots, V_p^k}$ for each block. This set of solutions must satisfy the global constraints and collectively form the current optimal solution to the problem.
+The Packing Technique is used to select a set of solutions $\{\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_p\}$ from the candidate solution sets $\{V_1^k, V_2^k, \ldots, V_p^k\}$ for each block. This set of solutions must satisfy the global constraints and collectively form the current optimal solution to the problem.
 
-For each block $j$, we define $X_j^k := [ \mathbf{x}^1_j; \mathbf{x}^2_j; \ldots; \mathbf{x}^k_j]$ as a matrix containing all solutions generated during the first $k$ iterations. Then, a set of binary selection variables $\mathbf{\mu}_j \in {{ 0, 1 }}^k$ is introduced such that $\hat{\mathbf{x}}_j = X_j^k \mathbf{\mu}_j$. Here, the binary variables $\mathbf{\mu}_j$ determine which solution is selected.
+For each block $j$, we define $X_j^k := [ \mathbf{x}^1_j; \mathbf{x}^2_j; \ldots; \mathbf{x}^k_j]$ as a matrix containing all solutions generated during the first $k$ iterations. Then, a set of binary selection variables $\mathbf{\mu}_j \in \{0, 1\}^k$ is introduced such that $\hat{\mathbf{x}}_j = X_j^k \mathbf{\mu}_j$. Here, the binary variables $\mathbf{\mu}_j$ determine which solution is selected.
 
 This approach transforms the problem into a restricted master problem, where the solutions generated during the BCD process are gradually added to the master problem using column generation techniques to find the optimal combination of solutions. The mathematical formulation of the optimization problem is as follows:
 
@@ -302,8 +302,9 @@ The C102 instance from the Solomon dataset was selected in this reproduction wor
 
 - C102-25: The first 25 customers were selected, and $3$ vehicles were allocated.
 - C102-50: The first 50 customers were selected, with $5$ vehicles allocated.
-C102-100: All 100 customers were selected, with $10$ vehicles allocated.
-The dataset is stored in the file c102.txt and is processed by the `data.py` script.
+- C102-100: All 100 customers were selected, with $10$ vehicles allocated.
+
+The dataset is stored in the file `c102.txt` and is processed by the `data.py` script.
 
 The original paper does not specify the exact setting for the maximum vehicle capacity. **Based on the authors' experimental results, we temporarily set it to 200 units.**
 
@@ -334,8 +335,8 @@ $$
 & \sum_{s \in V} \sum_{t \in V \setminus \{s\}} c_s x^j_{st} \leq C, \quad & \forall j \in \mathbb{N}_p \\
 & w^j_s + T_{st} - M(1 - x^j_{st}) \leq w^j_t, \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p \\
 & a_s \leq w^j_s \leq b_s, \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
-& x^j_{st} \in \{0, 1\} \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p, \\
-& w^j_s \geq 0 \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
+& x^j_{st} \in \{0, 1\}, \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p, \\
+& w^j_s \geq 0, \quad & \forall s \in V, \forall j \in \mathbb{N}_p
 \end{align}
 $$
 
@@ -357,7 +358,7 @@ $$
 
 where $f(\mathbf{x})$ is the original objective function.
 
-The right-hand side value of the global constraint is $\mathbf{b} = 1$. For each vehicle $j$, the constraint matrix block $\mathbf{A}_j$ is a $(|V|-1) \times |E|$ matrix. Specifically, the rows of $\mathbf{A}j$ correspond to each customer node $s$ (excluding the depot), and the columns correspond to each possible path $x^j{st}$. If the path $(s, t)$ is included in the constraint, the corresponding matrix element is $1$; otherwise, it is $0$.
+The right-hand side value of the global constraint is $\mathbf{b} = 1$. For each vehicle $j$, the constraint matrix block $\mathbf{A}_j$ is a $(|V|-1) \times |E|$ matrix. Specifically, the rows of $\mathbf{A}_j$ correspond to each customer node $s$ (excluding the depot), and the columns correspond to each possible path $x^j_{st}$. If the path $(s, t)$ is included in the constraint, the corresponding matrix element is $1$; otherwise, it is $0$.
 
 For instance, suppose there are three customers (nodes 1, 2, and 3) and one depot (node 0). The matrix $\mathbf{A}_j$ can be represented as:
 
@@ -374,11 +375,11 @@ The Augmented Lagrangian Method can be found in the `alm.py` file, and the Block
 
 #### 7.4 Initial Values
 
-In the paper, the authors do not provide detailed discussions regarding the initial solution $\mathbf{x}^0$, the initial values for the Lagrange multipliers $\mathbf{\lambda}^0$, and the initial penalty parameter $\mathbf{\lambda}^0$ in the Augmented Lagrangian Method for the vehicle routing problem.
+In the paper, the authors do not provide detailed discussions regarding the initial solution $\mathbf{x}^0$, the initial values for the Lagrange multipliers $\mathbf{\lambda}^0$, and the initial penalty parameter $\rho^0$ in the Augmented Lagrangian Method for the vehicle routing problem.
 
 **We used a greedy algorithm to find an appropriate initial solution $\mathbf{x}^0$ (implementation code can be found in `greedy.py`).** The core idea of this algorithm is: for the current node $s$, while ensuring compliance with time window constraints and vehicle capacity limits, select the next node $t$ that maximizes the value of $b_t - d_{st}$. Here, $b_t$ represents the end time of the time window constraint for node $t$, and $d_{st}$ is the distance (or time) from node $s$ to node $t$. This approach allows us to construct an initial route for each vehicle. Although this algorithm does not guarantee the satisfaction of all global constraints (i.e., visiting all nodes), it does satisfy the block constraints $\mathbf{x}_j \in \mathcal{X}_j$ (flow, time window, and capacity constraints), which is consistent with the convergence requirements discussed in the paper.
 
-The initial Lagrange multipliers $\mathbf{\lambda}^0$ are set to the zero vector, and the initial penalty parameter $\mathbf{\lambda}^0$ is set to 1.
+The initial Lagrange multipliers $\mathbf{\lambda}^0$ are set to the zero vector, and the initial penalty parameter $\rho^0$ is set to 1.
 
 #### 7.5 Finding Feasible Solutions
 
