@@ -1,4 +1,17 @@
-# Review and Reproduction: Augmented Lagrangian Method for Block-Structured Integer Programming 
+# Review and Reproduction: Augmented Lagrangian Method for Block-Structured Integer Programming
+
+We have reproduced the application of the Augmented Lagrangian Method to the Vehicle Routing Problem with Time Windows (CVRPTW).
+
+In the repository, you can find the following code:
+
+- `c102.txt`: Contains the C102 instance from the Solomon dataset.
+- `data.py`: Reads and processes the Solomon dataset.
+- `alm.py`: Implements the core logic of the Augmented Lagrangian Algorithm.
+- `calm.py`: A customized Augmented Lagrangian Algorithm incorporating feasible solution finding based on `alm.py`.
+- `bcd.py`: Implements the Block Coordinate Descent method for updating decision variables in the Augmented Lagrangian Algorithm, supporting Proximal Linear and Classical Update strategies.
+- `greedy.py`: Implements a greedy algorithm for finding an initial feasible solution in the Block Coordinate Descent method.
+- `feasible_heuristic.py`: Contains the implementation of heuristic algorithms; currently includes the Sweeping Technique for finding feasible solutions during iterations.
+- `gurobi.py`: Models and solves the problem using integer programming with Gurobi.
 
 ### 1. Overview
 
@@ -279,7 +292,7 @@ In the experimental section of the paper, the authors conducted numerical experi
 
 ### 7. Code Reproduction
 
-This repository contains the method's implementation and scripts for handling the Solomon dataset.
+This repository contains the method's implementation and scripts for handling capacitated vehicle routing problem with time-windows (CVRPTW).
 
 #### 7.1 Dataset
 
