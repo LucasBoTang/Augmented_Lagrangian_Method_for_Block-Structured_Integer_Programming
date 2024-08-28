@@ -9,8 +9,8 @@ In the repository, you can find the following code:
 - `alm.py`: Implements the core logic of the Augmented Lagrangian Algorithm.
 - `calm.py`: Incorporates feasible solution finding to `alm.py`.
 - `bcd.py`: Implements the Block Coordinate Descent method for updating decision variables in the Augmented Lagrangian Algorithm, supporting Proximal Linear and Classical Update strategies.
-- `greedy.py`: Implements a greedy algorithm for finding an initial feasible solution in the Block Coordinate Descent method.
-- `feasible_heuristic.py`: Contains the implementation of heuristic algorithms; currently includes the Sweeping Technique for finding feasible solutions during iterations.
+- `greedy.py`: Implements a greedy algorithm to find an initial feasible solution using the Block Coordinate Descent method.
+- `feasible_heuristic.py`: Implements of heuristic algorithms for finding feasible solutions during iterations, currently only includes the Sweeping Technique.
 - `gurobi.py`: Models and solves the problem using integer programming with Gurobi.
 
 ### 1. Overview
@@ -45,7 +45,7 @@ $$
 L(\mathbf{x}, \mathbf{\lambda}, \rho) = \mathbf{c}^{T} \mathbf{x} + \mathbf{\lambda}^{T} (\mathbf{A} \mathbf{x} - \mathbf{b}) + \frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2
 $$
 
-Here, \mathbf{\lambda} \geq \mathbf{0}\mathbf{\lambda} \geq \mathbf{0} is the Lagrange multiplier vector, and \rho > 0\rho > 0 is the penalty parameter for the quadratic term. The corresponding augmented Lagrangian relaxation problem is as follows:
+Here, $\mathbf{\lambda} \geq \mathbf{0}$ is the Lagrange multiplier vector, and $\rho > 0$ is the penalty parameter for the quadratic term. The corresponding augmented Lagrangian relaxation problem is as follows:
 
 $$
 d(\mathbf{\lambda}, \rho) := \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}, \rho)
