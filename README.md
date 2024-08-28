@@ -1,4 +1,4 @@
-# Review and Reproduction: Augmented Lagrangian Method for Block-Structured Integer Programming
+# Augmented Lagrangian Method for Block-Structured Integer Programming
 
 ### Summary
 
