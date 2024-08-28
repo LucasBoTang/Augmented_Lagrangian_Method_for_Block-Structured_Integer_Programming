@@ -71,7 +71,7 @@ At each iteration $k$, the iterative process of the Augmented Lagrangian Method 
 2. Update the multipliers $\mathbf{\lambda}^{k+1}$.
 3. Update the penalty parameter ${\rho}^{k+1}$.
 
-Since the Augmented Lagrangian relaxation function $d(\mathbf{\lambda},  \rho)$ is a non-differentiable concave function, we need to use the current iterate $\mathbf{x}^k$ to construct a subgradient of this function at $(\mathbf{\lambda}^k, {\rho}^k)$ in order to update the multipliers $\mathbf{\lambda}$ and the penalty parameter $\rho$:
+Since the Augmented Lagrangian relaxation function $d(\mathbf{\lambda},  \rho)$ is a non-differentiable concave function, we need to use the current iterate $\mathbf{x}^k$ to construct a subgradient of this function at $(\mathbf{\lambda}^k, {\rho}^k)$ in order to update the multipliers $\mathbf{\lambda}$ and the penalty parameter $ \rho $:
 
 $$
 \begin{align}
@@ -80,7 +80,7 @@ $$
 \end{align}
 $$
 
-Given that the multipliers $\mathbf{\lambda}$ and the penalty parameter $\rho$ must satisfy non-negativity constraints, i.e., $\mathbf{\lambda} \geq \mathbf{0}$ and $\rho > 0$, we can update these parameters using the Projected Subgradient Method to ensure they remain non-negative after the update:
+Given that the multipliers $\mathbf{\lambda}$ and the penalty parameter $ \rho $ must satisfy non-negativity constraints, i.e., $\mathbf{\lambda} \geq \mathbf{0}$ and $\rho > 0$, we can update these parameters using the Projected Subgradient Method to ensure they remain non-negative after the update:
 
 $$
 \begin{align}
@@ -89,7 +89,7 @@ $$
 \end{align}
 $$
 
-However, in the experimental section of the paper, the method for updating the penalty parameter $\rho$ differs. Specifically, the authors gradually increase the penalty parameter $\rho$ by using a scaling factor $\sigma$, thereby increasing the penalty for constraint violations. As a result, $\rho$ is updated as follows:
+However, in the experimental section of the paper, the method for updating the penalty parameter $ \rho $ differs. Specifically, the authors gradually increase the penalty parameter $ \rho $ by using a scaling factor $\sigma$, thereby increasing the penalty for constraint violations. As a result, $ \rho $ is updated as follows:
 
 $$
 \rho^{k+1} := \sigma  \cdot \rho^{k}
@@ -113,7 +113,7 @@ Although the paper does not provide detailed instructions, the selection of init
 
 - The initial Lagrange multipliers $\mathbf{\lambda}^0$ should lie within the non-negative domain $\mathbb{R}_+^m$. These multipliers are typically initialized as a zero vector, i.e., $\mathbf{\lambda}^0 = \mathbf{0}$.
 
-- The initial penalty parameter $\rho$ is usually set to a small positive value and gradually increased during the iterations to ensure convergence and satisfaction of the constraints.
+- The initial penalty parameter $ \rho $ is usually set to a small positive value and gradually increased during the iterations to ensure convergence and satisfaction of the constraints.
 
 #### 3.5 Step Size and Convergence
 
