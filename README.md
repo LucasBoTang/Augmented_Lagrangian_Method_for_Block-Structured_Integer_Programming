@@ -29,6 +29,8 @@ For more detailed information on the method and its application, please refer to
 
 Wang, R., Zhang, C., Pu, S., Gao, J., & Wen, Z. (2024). A Customized Augmented Lagrangian Method for Block-Structured Integer Programming. IEEE Transactions on Pattern Analysis and Machine Intelligence.
 
+BibTeX:
+
 ```
 @article{wang2024customized,
   title={A Customized Augmented Lagrangian Method for Block-Structured Integer Programming},
