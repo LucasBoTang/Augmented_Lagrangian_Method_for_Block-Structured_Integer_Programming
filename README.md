@@ -241,7 +241,7 @@ The Sweeping Technique is an intuitive and efficient method for finding feasible
 For each block $j$ in the optimization problem, this technique operates as follows:
 
 1. Select a candidate solution $\mathbf{v}_j$ from the solution pool $V_j^k$.
-2. Check whether the current candidate solution $\mathbf{v}_j$ satisfies the global constraint of the problem $\mathbf{A}_j \mathbf{v}j + \sum{l \neq j}^p \mathbf{A}_l \hat{\mathbf{x}}^k_l \leq \mathbf{b}$.
+2. Check whether the current candidate solution $\mathbf{v}_j$ satisfies the global constraint of the problem $\mathbf{A}_j \mathbf{v}_j + \sum{l \neq j}^p \mathbf{A}_l \hat{\mathbf{x}}^k_l \leq \mathbf{b}$.
 3. If the candidate solution $\mathbf{v}_j$ is feasible, it is retained as the current solution for that block $\hat{\mathbf{x}}^k_j := \mathbf{v}_j$.
 4. If the candidate solution $\mathbf{v}_j$ is infeasible, set the solution for that block temporarily to zero (or another feasible initial state) and continue checking the next block in the sequence.
 
