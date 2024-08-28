@@ -153,7 +153,7 @@ Although the theoretical basis for selecting the step size coefficient ${\beta}^
 
 During the iterative process of the Augmented Lagrangian Method, the decision variables $\mathbf{x} := \arg \min_{\mathbf{x} \in \mathcal{X}} L(\mathbf{x}, \mathbf{\lambda}^k, {\rho}^k)$ do not have a closed-form solution, but they can be solved either exactly or approximately using iterative methods.
 
-The augmented Lagrangian function achieves the decoupling of the constraints by embedding the global constraints into the objective function. However, due to the presence of the quadratic term $\frac{\rho}{2} | (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} |^2$ in the function, the decision variables are coupled in the objective function. As a result, it is not possible to directly decompose the problem into $p$ independent subproblems to solve them separately.
+The augmented Lagrangian function achieves the decoupling of the constraints by embedding the global constraints into the objective function. However, due to the presence of the quadratic term $\frac{\rho}{2} \| (\mathbf{A} \mathbf{x} - \mathbf{b})_{+} \|^2$ in the function, the decision variables are coupled in the objective function. As a result, it is not possible to directly decompose the problem into $p$ independent subproblems to solve them separately.
 
 Based on the special structure of the original problem, the authors propose a novel Block Coordinate Descent (BCD) method. This method divides the decision variables $\mathbf{x}$ into multiple sub-blocks and minimizes the function by sequentially iterating over $\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_p$, thereby approximating the optimal solution to the problem:
 
@@ -176,7 +176,7 @@ $$
 g_j(\mathbf{x}^t) := \nabla_{\mathbf{x}_j}  L(\mathbf{x}, \mathbf{\lambda}, {\rho}) = \mathbf{c}_j + \mathbf{A}_j^{T} \mathbf{\lambda} + \rho \mathbf{A}_j^{T} (\mathbf{A} \mathbf{x}^t - \mathbf{b})_{+}
 $$
 
-The Proximal Linear method can utilize this first-order gradient $g_j(\mathbf{x}^t)$ to linearly approximate the augmented Lagrangian function at the point $\mathbf{x}^t$ as ${g_j(\mathbf{x}^t)}^{T} (\mathbf{x}_j - \mathbf{x}^t_j)$, while ignoring its higher-order terms. This approximation reduces the computational complexity while preserving the primary trend of the function. Then, a quadratic regularization term $| \mathbf{x}_j - \mathbf{x}^t_j |^2$ is added to the linearized objective function to promote solution stability and prevent too-large update steps. This results in the following expression:
+The Proximal Linear method can utilize this first-order gradient $g_j(\mathbf{x}^t)$ to linearly approximate the augmented Lagrangian function at the point $\mathbf{x}^t$ as ${g_j(\mathbf{x}^t)}^{T} (\mathbf{x}_j - \mathbf{x}^t_j)$, while ignoring its higher-order terms. This approximation reduces the computational complexity while preserving the primary trend of the function. Then, a quadratic regularization term $\| \mathbf{x}_j - \mathbf{x}^t_j \|^2$ is added to the linearized objective function to promote solution stability and prevent too-large update steps. This results in the following expression:
 
 $$
 \mathbf{x}^{t+1}_j \in \arg \min_{\mathbf{x}_j \in \mathcal{X}_j} {g_j(\mathbf{x}^t)}^{T} (\mathbf{x}_j - \mathbf{x}^t_j) + \frac{1}{\tau} \| \mathbf{x}_j - \mathbf{x}^t_j \|^2
@@ -226,7 +226,7 @@ The convergence analysis provides theoretical guarantees that, under appropriate
 
 First, if the starting point satisfies $\mathbf{x}^0 \in \mathcal{X}$, the method is always executable and will terminate after a finite number of iterations, yielding the block optimal solution of the augmented Lagrangian relaxation problem $d(\mathbf{\lambda}, \rho)$, i.e., the block's variables are optimally chosen when the other blocks' variables are fixed.
 
-The paper proves that the gradient of the augmented Lagrangian function is Lipschitz continuous, which is key to ensuring global convergence. For all $\mathbf{x}, \mathbf{x}^{\prime} \in \mathcal{X}$, with $\kappa = \rho {| \mathbf{A} |}^2$, we have:
+The paper proves that the gradient of the augmented Lagrangian function is Lipschitz continuous, which is key to ensuring global convergence. For all $\mathbf{x}, \mathbf{x}^{\prime} \in \mathcal{X}$, with $\kappa = \rho {\| \mathbf{A} \|}^2$, we have:
 
 $$
 \| \nabla L(\mathbf{x}, \mathbf{\lambda}, {\rho}) - \nabla L(\mathbf{x}^{\prime}, \mathbf{\lambda}, {\rho}) \| \leq \kappa \| \mathbf{x} - \mathbf{x}^{\prime} \|
