@@ -32,10 +32,10 @@ f^{\text{IP}} := \min_{\mathbf{x}} \quad & \mathbf{c}^{T} \mathbf{x} \\
 $$
 
 Where:
-- \mathbf{x}\mathbf{x} is the decision variable vector, which is divided into pp sub-blocks as \mathbf{x}_j\mathbf{x}_j.
-- \mathbf{c}^{T} \mathbf{x}\mathbf{c}^{T} \mathbf{x} is the linear objective function, and \mathbf{c}\mathbf{c} is the coefficient vector of the objective function.
-- \mathbf{A} \mathbf{x} \leq \mathbf{b}\mathbf{A} \mathbf{x} \leq \mathbf{b} represents the global linear inequality constraints that couple all decision variables \mathbf{x}\mathbf{x} together.
-- Each sub-block \mathbf{x}_j\mathbf{x}_j needs to satisfy specific integer constraints \mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}.
+- $\mathbf{x}\mathbf{x}$ is the decision variable vector, which is divided into pp sub-blocks as $\mathbf{x}_j\mathbf{x}_j$.
+- $\mathbf{c}^{T} \mathbf{x}\mathbf{c}^{T} \mathbf{x}$ is the linear objective function, and $\mathbf{c}\mathbf{c}$ is the coefficient vector of the objective function.
+- $\mathbf{A} \mathbf{x} \leq \mathbf{b}\mathbf{A} \mathbf{x} \leq \mathbf{b}$ represents the global linear inequality constraints that couple all decision variables $\mathbf{x}\mathbf{x}$ together.
+- Each sub-block \mathbf{x}_j\mathbf{x}_j needs to satisfy specific integer constraints $\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}\mathcal{X}_j = {\mathbf{x}_j \in {0,1}^{n_j}: \mathbf{B}_j \mathbf{x}_j \leq \mathbf{D}_j}$.
 
 ### 3. Augmented Lagrangian Method for Solving Dual Problem Iteratively
 
@@ -61,7 +61,7 @@ This bi-level dual problem seeks to find the minimum of the augmented Lagrangian
 
 #### 3.1 Strong Duality
 
-The authors prove that if the original problem is feasible and bounded, then there exists a finite penalty parameter $\rho^*$ such that for all $\rho \geq \rho^*$, strong duality holds between the original problem $f^{\text{IP}}$ and the augmented Lagrangian dual problem $f_{\rho}^{\text{LD}}$—meaning their optimal values are equal. Therefore, we can find the optimal solution to the primal problem by solving the dual problem.
+The authors prove that if the original problem is feasible and bounded, then there exists a finite penalty parameter $\rho^{\ast}$ such that for all $\rho \geq \rho^{\ast}$, strong duality holds between the original problem $f^{\text{IP}}$ and the augmented Lagrangian dual problem $f_{\rho}^{\text{LD}}$—meaning their optimal values are equal. Therefore, we can find the optimal solution to the primal problem by solving the dual problem.
 
 #### 3.2  Iteration Steps
 
