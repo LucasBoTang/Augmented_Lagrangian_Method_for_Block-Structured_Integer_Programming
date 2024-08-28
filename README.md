@@ -10,7 +10,6 @@ We have reproduced the application of the Augmented Lagrangian Method to the Veh
 
 In the repository, you can find the following code:
 
-- `c102.txt`: Contains the C102 instance from the Solomon dataset.
 - `data.py`: Reads and processes the Solomon dataset.
 - `alm.py`: Implements the core logic of the Augmented Lagrangian Algorithm.
 - `calm.py`: Incorporates feasible solution finding to `alm.py`.
