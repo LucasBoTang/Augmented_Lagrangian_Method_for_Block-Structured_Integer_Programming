@@ -95,7 +95,7 @@ $$
 \rho^{k+1} := \sigma  \cdot \rho^{k}
 $$
 
-#### 3.3 Termination Condition 
+#### 3.3 Termination Condition
 
 After each iteration, the algorithm checks whether the current solution satisfies the global constraints of the original problem:
 
