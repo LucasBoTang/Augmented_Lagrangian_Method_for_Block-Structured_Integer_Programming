@@ -22,7 +22,7 @@ def descent(df, num_customers, num_vehicles, x, λ, ρ, cj, Aj, A, b, solution_p
             # classical update
             x[j] = classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ)
         if x_update_method == "p":
-            # roximal linear update
+            # proximal linear update
             x[j] = proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ)
         # add the feasible solution to the solution pool
         solution_pool[j].append(x[j])
