@@ -30,7 +30,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2,
     best_obj_val = float("inf")
     optimality_gap = float("inf")
     # init step size
-    α_0 = 0.1
+    α_0 = 1.0
     # init timer
     tick = time.time()
     # iterations

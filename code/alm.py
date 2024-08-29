@@ -25,7 +25,7 @@ def solve(df, num_customers=25, num_vehicles=3, k_max=100, t_max=50, tol=1e-2, x
     # initialize solution pool
     solution_pool = [[] for _ in range(num_vehicles)]
     # init step size
-    α_0 = 0.1
+    α_0 = 1.0
     # init timer
     tick = time.time()
     # iterations
