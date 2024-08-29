@@ -92,3 +92,4 @@ if __name__ == "__main__":
 
     # get model
     model = solve(df)
+    #model = solve(df, num_customers=50, num_vehicles=5)
