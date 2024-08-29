@@ -46,7 +46,7 @@ $$
 f(\mathbf{x}) + \sum_{s \in V \setminus \{0\}} \lambda_s \left( \sum_{j \in N_p} \sum_{t \in V : t \neq s} x^j_{st} - 1 \right) + \frac{\rho}{2} \sum_{s \in V \setminus \{0\}} \left( \sum_{j \in N_p} \sum_{t \in V : t \neq s} x^j_{st} - 1 \right)^2
 $$
 
-where $f(\mathbf{x})$ is the original objective function.
+where $f(\mathbf{x})$ is the original objective function $\sum_{j \in N_p} \sum_{(s,t) \in E} d_{st} x^j_{st}$.
 
 ### Citation
 
