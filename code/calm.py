@@ -117,7 +117,8 @@ def updateLagrangeMultipliers(λ, violation, α):
     # update with subgradient
     λ += α * violation
     # project onto the non-negative orthant
-    λ = np.maximum(0, λ)
+    # no projection for equality constraints
+    # λ = np.maximum(0, λ)
     return λ
 
 
