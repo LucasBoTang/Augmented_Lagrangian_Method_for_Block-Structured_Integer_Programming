@@ -39,6 +39,7 @@ def classicalUpdate(df, num_customers, num_vehicles, x, j, cj, Aj, λ, ρ):
     for l in range(num_vehicles):
         if l != j:
             temp += Aj @ x[l]
+    # obj_coeffs += ρ * Aj.T @ np.abs(temp - 1/2)
     obj_coeffs += ρ * Aj.T @ (temp - 1/2)
     # solve subproblem
     xj = solveSubproblem(df, num_customers, obj_coeffs)
@@ -52,7 +53,8 @@ def proximalLinearUpdate(df, num_customers, x, j, cj, Aj, A, b, λ, ρ, τ=0.1):
     # constraints violation
     violation = A @ x.flatten() - b
     # compute gradient
-    grad_j = cj + Aj.T @ λ + ρ * np.abs(Aj.T @ violation)
+    # grad_j = cj + Aj.T @ λ + ρ * np.abs(Aj.T @ violation)
+    grad_j = cj + Aj.T @ λ + ρ * Aj.T @ violation
     # objective coefficients
     obj_coeffs = τ * grad_j + 1/2 - x[j]
     # solve subproblem
