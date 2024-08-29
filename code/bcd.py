@@ -77,16 +77,16 @@ def solveSubproblem(df, num_customers, obj_coeffs):
     coords = df[["XCOORD.", "YCOORD."]].values
     distance_matrix = np.array(cdist(coords, coords, metric="euclidean"))
     # get values for modeling
-    demand = df['DEMAND'].values
-    ready_time = df['READY TIME'].values
-    due_date = df['DUE DATE'].values
-    service_time = df['SERVICE TIME'].values
+    demand = df["DEMAND"].values
+    ready_time = df["READY TIME"].values
+    due_date = df["DUE DATE"].values
+    service_time = df["SERVICE TIME"].values
     # set capacity
     capacity = 200
     # init model
     model = grb.Model("classical_update")
     # disable output
-    model.setParam('OutputFlag', 0)
+    model.setParam("OutputFlag", 0)
     # decision variables
     xj = model.addVars(edges, vtype=GRB.BINARY, name="xj")
     wj = model.addVars(nodes, vtype=GRB.CONTINUOUS, name="wj")
