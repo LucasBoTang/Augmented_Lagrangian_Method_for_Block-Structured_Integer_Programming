@@ -29,14 +29,14 @@ The mathematical model for the Capacitated Vehicle Routing Problem with Time Win
 $$
 \begin{align}
 \min & \sum_{j \in \mathbb{N}_p} \sum_{(s,t) \in E} d_{st} x^j_{st} \\
-\text{s.t.} \quad & \sum_{j \in \mathbb{N}_p} \sum_{t \in V : t \neq s} x^j_{st} = 1, \quad & \forall s \in V \setminus \{0\} \\
-& \sum_{t \in V \setminus \{s\}} x^j_{st} = \sum_{t \in V \setminus \{s\}} x^j_{ts}, \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
-& \sum_{t \in V \setminus \{0\}} x^j_{0t} = 1, \quad & \forall j \in \mathbb{N}_p \\
-& \sum_{s \in V} \sum_{t \in V \setminus \{s\}} c_s x^j_{st} \leq C, \quad & \forall j \in \mathbb{N}_p \\
-& w^j_s + T_{st} - M(1 - x^j_{st}) \leq w^j_t, \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p \\
-& a_s \leq w^j_s \leq b_s, \quad & \forall s \in V, \forall j \in \mathbb{N}_p \\
-& x^j_{st} \in \{0, 1\}, \quad & \forall (s, t) \in E, \forall j \in \mathbb{N}_p, \\
-& w^j_s \geq 0, \quad & \forall s \in V, \forall j \in \mathbb{N}_p
+\text{s.t.} \quad & \sum_{j \in \mathbb{N}_p} \sum_{t \in V : t \neq s} x^j_{st} = 1, \quad \forall s \in V \setminus \{0\} \\
+& \sum_{t \in V \setminus \{s\}} x^j_{st} = \sum_{t \in V \setminus \{s\}} x^j_{ts}, \quad \forall s \in V, \forall j \in \mathbb{N}_p \\
+& \sum_{t \in V \setminus \{0\}} x^j_{0t} = 1, \quad \forall j \in \mathbb{N}_p \\
+& \sum_{s \in V} \sum_{t \in V \setminus \{s\}} c_s x^j_{st} \leq C, \quad \forall j \in \mathbb{N}_p \\
+& w^j_s + T_{st} - M(1 - x^j_{st}) \leq w^j_t, \quad \forall (s, t) \in E, \forall j \in \mathbb{N}_p \\
+& a_s \leq w^j_s \leq b_s, \quad \forall s \in V, \forall j \in \mathbb{N}_p \\
+& x^j_{st} \in \{0, 1\}, \quad \forall (s, t) \in E, \forall j \in \mathbb{N}_p, \\
+& w^j_s \geq 0, \quad \forall s \in V, \forall j \in \mathbb{N}_p
 \end{align}
 $$
 
