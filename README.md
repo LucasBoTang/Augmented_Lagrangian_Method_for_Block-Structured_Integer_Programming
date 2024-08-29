@@ -39,3 +39,7 @@ BibTeX:
   publisher={IEEE}
 }
 ```
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE file](https://github.com/LucasBoTang/Augmented_Lagrangian_Method_for_Block-Structured_Integer_Programming/blob/main/LICENSE) for details.
