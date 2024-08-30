@@ -50,7 +50,7 @@ $$
 
 For more detailed information on the method and its application, please refer to the original paper:
 
-Wang, R., Zhang, C., Pu, S., Gao, J., & Wen, Z. (2024). A Customized Augmented Lagrangian Method for Block-Structured Integer Programming. IEEE Transactions on Pattern Analysis and Machine Intelligence.
+[Wang, R., Zhang, C., Pu, S., Gao, J., & Wen, Z. (2024). A Customized Augmented Lagrangian Method for Block-Structured Integer Programming. IEEE Transactions on Pattern Analysis and Machine Intelligence.](https://ieeexplore.ieee.org/abstract/document/10564174)
 
 BibTeX:
 
